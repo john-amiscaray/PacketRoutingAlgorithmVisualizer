@@ -15,7 +15,6 @@ class GraphTest {
     @Test
     public void testGraphHasGivenNodes(){
 
-
         assertEquals(nodes, graph.getNodes());
 
     }
@@ -23,9 +22,7 @@ class GraphTest {
     @Test
     public void testGraphHasGivenEdges() {
 
-        Graph graph = new Graph(nodes, edges);
-
-        assertEquals(edges, this.graph.getEdges());
+        assertEquals(edges, graph.getEdges());
 
     }
 
