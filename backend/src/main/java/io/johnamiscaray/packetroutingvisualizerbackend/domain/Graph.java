@@ -69,10 +69,11 @@ public class Graph {
         }
 
         List<Node> visited = new ArrayList<>();
-        List<PathEntry> entries = graph.getNodes()
-                .stream()
-                .map(node -> new PathEntry(node.getLabel(), node.getLabel().equals(start) ? 0 : Integer.MAX_VALUE, null))
-                .collect(Collectors.toList());
+        TreeMap<String, PathEntry> entries = new TreeMap<>(String::compareTo);
+
+        for (Node node : graph.getNodes()) {
+            entries.put(node.getLabel(), new PathEntry(node.getLabel(), node.getLabel().equals(start) ? 0 : Integer.MAX_VALUE, null));
+        }
 
         // Create a priority queue where the priority is dictated by the path entry with the least distance
         PriorityQueue<Pair<Node, Integer>> searchQueue = new PriorityQueue<>(entries.size(), Comparator.comparing(Pair::getValue1));
@@ -105,17 +106,13 @@ public class Graph {
             int finalLastCost = lastCost;
             String finalLastNode = lastNode;
             connectedUnvisitedNodes.forEach(nodeEdgePair -> {
-                Optional<PathEntry> nodeEntryOptional = entries.stream()
-                        .filter(pathEntry -> pathEntry.getVertexLabel().equals(nodeEdgePair.getValue0().getLabel()))
-                        .findFirst();
-                assert nodeEntryOptional.isPresent();
-                PathEntry nodeEntry = nodeEntryOptional.get();
+                PathEntry nodeEntry = entries.get(nodeEdgePair.getValue0().getLabel());
                 if(finalLastCost + nodeEdgePair.getValue1().getWeight() < nodeEntry.getDistance()){
                     nodeEntry.setDistance(finalLastCost + nodeEdgePair.getValue1().getWeight());
                     nodeEntry.setPreviousVertexLabel(finalLastNode);
                     /*
                      Add a new entry to the queue with the node and the updated cost. We keep the old entry with the previous cost
-                     and ignore it using the if statement at line 93. Deletion from the queue takes linear time, so it's potentially
+                     and ignore it using the if statement at line 94. Deletion from the queue takes linear time, so it's potentially
                      better to ignore it instead of delete it like what we do here.
                      */
                     searchQueue.add(new Pair<>(nodeEdgePair.getValue0(), nodeEntry.getDistance()));
@@ -124,7 +121,7 @@ public class Graph {
 
         }
 
-        return entries;
+        return entries.values().stream().toList();
 
     }
 
