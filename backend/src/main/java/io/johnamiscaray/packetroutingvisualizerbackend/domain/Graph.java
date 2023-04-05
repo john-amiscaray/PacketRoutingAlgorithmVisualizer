@@ -75,29 +75,35 @@ public class Graph {
                 .collect(Collectors.toList());
 
         // Create a priority queue where the priority is dictated by the path entry with the least distance
-        PriorityQueue<PathEntry> searchQueue = new PriorityQueue<>(entries.size(), Comparator.comparingInt(PathEntry::getDistance));
+        PriorityQueue<Pair<Node, Integer>> searchQueue = new PriorityQueue<>(entries.size(), Comparator.comparing(Pair::getValue1));
 
-        searchQueue.addAll(entries);
-        int lastCost = 0;
+        searchQueue.addAll(
+            graph.getNodes()
+                .stream()
+                .map(node -> new Pair<>(node, node.getLabel().equals(start) ? 0 : Integer.MAX_VALUE))
+                .collect(Collectors.toList())
+        );
+        int lastCost;
+        String lastNode;
 
         while(!searchQueue.isEmpty()){
 
-            PathEntry entry = searchQueue.poll();
-            Optional<Node> optionalNode = graph.getNode(entry.getVertexLabel());
-            assert optionalNode.isPresent();
-            Node currentNode = optionalNode.get();
+            Pair<Node, Integer> entry = searchQueue.poll();
+            Node currentNode = entry.getValue0();
             if(visited.contains(currentNode)){
                 continue;
             }
             visited.add(currentNode);
-            lastCost += entry.getDistance();
+            lastCost = entry.getValue1();
+            lastNode = currentNode.getLabel();
             List<Pair<Node, Edge>> connectedUnvisitedNodes = graph.connectedNodesOf(currentNode)
                     .stream()
                     .filter(pair -> !visited.contains(pair.getValue0()))
                     .collect(Collectors.toList());
 
-            // Need to declare this finalLastCost variable because the compiler requires that variables used in a lambda must be final or effectively final
+            // Need to declare these finalLastCost and finalLastNode variables because the compiler requires that variables used in a lambda must be final or effectively final
             int finalLastCost = lastCost;
+            String finalLastNode = lastNode;
             connectedUnvisitedNodes.forEach(nodeEdgePair -> {
                 Optional<PathEntry> nodeEntryOptional = entries.stream()
                         .filter(pathEntry -> pathEntry.getVertexLabel().equals(nodeEdgePair.getValue0().getLabel()))
@@ -106,13 +112,13 @@ public class Graph {
                 PathEntry nodeEntry = nodeEntryOptional.get();
                 if(finalLastCost + nodeEdgePair.getValue1().getWeight() < nodeEntry.getDistance()){
                     nodeEntry.setDistance(finalLastCost + nodeEdgePair.getValue1().getWeight());
+                    nodeEntry.setPreviousVertexLabel(finalLastNode);
                     /*
-                     Add the entry again to the priority queue. This is because the priority queue doesn't auto update the priority when we update the state of an entry.
-                     If we tried deleting the old entry and added the new one with the updated distance, this would take O(n) time, slowing down the algorithm. Instead,
-                     we add the entry again with the updated distance and if we see the old entry we can ignore it using the if statement at line 89. For more details on this
-                     implementation decision, see this: https://stackoverflow.com/questions/6952660/java-priority-queue-reordering-when-editing-elements
+                     Add a new entry to the queue with the node and the updated cost. We keep the old entry with the previous cost
+                     and ignore it using the if statement at line 93. Deletion from the queue takes linear time, so it's potentially
+                     better to ignore it instead of delete it like what we do here.
                      */
-                    searchQueue.add(nodeEntry);
+                    searchQueue.add(new Pair<>(nodeEdgePair.getValue0(), nodeEntry.getDistance()));
                 }
             });
 
