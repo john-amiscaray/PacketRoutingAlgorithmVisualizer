@@ -65,7 +65,7 @@ public class Graph {
     public static List<DijkstraState> dijkstra(Graph graph, String start){
 
         if(graph.getNode(start).isEmpty()){
-            throw new IllegalArgumentException("The graph does not have node: " + start);
+            throw new IllegalArgumentException("The graph does not have starting node: " + start);
         }
 
         List<Node> visited = new ArrayList<>();
