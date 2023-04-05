@@ -76,7 +76,7 @@ public class Graph {
             entries.put(node.getLabel(), new PathEntry(node.getLabel(), node.getLabel().equals(start) ? 0 : Integer.MAX_VALUE, null));
         }
 
-        finalResult.add(entries.values().stream().toList());
+        finalResult.add(entries.values().stream().map(PathEntry::new).toList());
 
         // Create a priority queue where the priority is dictated by the path entry with the least distance
         PriorityQueue<Pair<Node, Integer>> searchQueue = new PriorityQueue<>(entries.size(), Comparator.comparing(Pair::getValue1));
@@ -122,7 +122,7 @@ public class Graph {
                 }
             });
 
-            finalResult.add(entries.values().stream().toList());
+            finalResult.add(entries.values().stream().map(PathEntry::new).toList());
 
         }
 

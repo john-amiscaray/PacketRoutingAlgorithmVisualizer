@@ -37,33 +37,116 @@ public class DijkstraTest {
     );
 
     @Test
-    public void testGraph1FinalResult() {
-
-        List<List<PathEntry>> result = Graph.dijkstra(graph1, "A");
+    public void testGraph1Steps() {
 
         assertEquals(List.of(
-                new PathEntry("A", 0, null),
-                new PathEntry("B", 3, "D"),
-                new PathEntry("C", 7, "E"),
-                new PathEntry("D", 1, "A"),
-                new PathEntry("E", 2, "D")
-        ), result.get(result.size() - 1));
+                List.of(
+                        new PathEntry("A", 0, null),
+                        new PathEntry("B", Integer.MAX_VALUE, null),
+                        new PathEntry("C", Integer.MAX_VALUE, null),
+                        new PathEntry("D", Integer.MAX_VALUE, null),
+                        new PathEntry("E", Integer.MAX_VALUE, null)
+                ),
+                List.of(
+                        new PathEntry("A", 0, null),
+                        new PathEntry("B", 6, "A"),
+                        new PathEntry("C", Integer.MAX_VALUE, null),
+                        new PathEntry("D", 1, "A"),
+                        new PathEntry("E", Integer.MAX_VALUE, null)
+                ),
+                List.of(
+                        new PathEntry("A", 0, null),
+                        new PathEntry("B", 3, "D"),
+                        new PathEntry("C", Integer.MAX_VALUE, null),
+                        new PathEntry("D", 1, "A"),
+                        new PathEntry("E", 2, "D")
+                ),
+                List.of(
+                        new PathEntry("A", 0, null),
+                        new PathEntry("B", 3, "D"),
+                        new PathEntry("C", 7, "E"),
+                        new PathEntry("D", 1, "A"),
+                        new PathEntry("E", 2, "D")
+                ),
+                List.of(
+                        new PathEntry("A", 0, null),
+                        new PathEntry("B", 3, "D"),
+                        new PathEntry("C", 7, "E"),
+                        new PathEntry("D", 1, "A"),
+                        new PathEntry("E", 2, "D")
+                ),
+                List.of(
+                        new PathEntry("A", 0, null),
+                        new PathEntry("B", 3, "D"),
+                        new PathEntry("C", 7, "E"),
+                        new PathEntry("D", 1, "A"),
+                        new PathEntry("E", 2, "D")
+                )
+        ), Graph.dijkstra(graph1, "A"));
 
     }
 
     @Test
     public void testGraph2FinalResult() {
 
-        List<List<PathEntry>> result = Graph.dijkstra(graph2, "A");
-
         assertEquals(List.of(
-                new PathEntry("A", 0, null),
-                new PathEntry("B", 2, "A"),
-                new PathEntry("C", 12, "F"),
-                new PathEntry("D", 7, "B"),
-                new PathEntry("E", 8, "B"),
-                new PathEntry("F", 9, "D")
-        ), result.get(result.size() - 1));
+                List.of(
+                        new PathEntry("A", 0, null),
+                        new PathEntry("B", Integer.MAX_VALUE, null),
+                        new PathEntry("C", Integer.MAX_VALUE, null),
+                        new PathEntry("D", Integer.MAX_VALUE, null),
+                        new PathEntry("E", Integer.MAX_VALUE, null),
+                        new PathEntry("F", Integer.MAX_VALUE, null)
+                ),
+                List.of(
+                        new PathEntry("A", 0, null),
+                        new PathEntry("B", 2, "A"),
+                        new PathEntry("C", Integer.MAX_VALUE, null),
+                        new PathEntry("D", 8, "A"),
+                        new PathEntry("E", Integer.MAX_VALUE, null),
+                        new PathEntry("F", Integer.MAX_VALUE, null)
+                ),
+                List.of(
+                        new PathEntry("A", 0, null),
+                        new PathEntry("B", 2, "A"),
+                        new PathEntry("C", Integer.MAX_VALUE, null),
+                        new PathEntry("D", 7, "B"),
+                        new PathEntry("E", 8, "B"),
+                        new PathEntry("F", Integer.MAX_VALUE, null)
+                ),
+                List.of(
+                        new PathEntry("A", 0, null),
+                        new PathEntry("B", 2, "A"),
+                        new PathEntry("C", Integer.MAX_VALUE, null),
+                        new PathEntry("D", 7, "B"),
+                        new PathEntry("E", 8, "B"),
+                        new PathEntry("F", 9, "D")
+                ),
+                List.of(
+                        new PathEntry("A", 0, null),
+                        new PathEntry("B", 2, "A"),
+                        new PathEntry("C", 17, "E"),
+                        new PathEntry("D", 7, "B"),
+                        new PathEntry("E", 8, "B"),
+                        new PathEntry("F", 9, "D")
+                ),
+                List.of(
+                        new PathEntry("A", 0, null),
+                        new PathEntry("B", 2, "A"),
+                        new PathEntry("C", 12, "F"),
+                        new PathEntry("D", 7, "B"),
+                        new PathEntry("E", 8, "B"),
+                        new PathEntry("F", 9, "D")
+                ),
+                List.of(
+                        new PathEntry("A", 0, null),
+                        new PathEntry("B", 2, "A"),
+                        new PathEntry("C", 12, "F"),
+                        new PathEntry("D", 7, "B"),
+                        new PathEntry("E", 8, "B"),
+                        new PathEntry("F", 9, "D")
+                )
+        ), Graph.dijkstra(graph2, "A"));
 
     }
 

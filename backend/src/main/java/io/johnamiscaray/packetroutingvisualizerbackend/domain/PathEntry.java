@@ -16,4 +16,9 @@ public class PathEntry {
     private Integer distance;
     private String previousVertexLabel;
 
+    public PathEntry(PathEntry entry) {
+        vertexLabel = entry.vertexLabel;
+        distance = entry.distance;
+        previousVertexLabel = entry.previousVertexLabel;
+    }
 }
