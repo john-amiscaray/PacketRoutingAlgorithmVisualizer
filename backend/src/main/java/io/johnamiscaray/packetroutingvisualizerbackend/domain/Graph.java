@@ -56,13 +56,13 @@ public class Graph {
 
     /**
      *
-     * Computes dijkstra's algorithm on a given graph, returning the computed path after each step
+     * Computes dijkstra's algorithm on a given graph, returning the computed path after each step represented as a DijkstraState instance
      *
      * @param graph The graph to compute the algorithm on
      * @param start The starting node for the shortest path
-     * @return A list of lists of path entries, each representing the state at each step of the algorithm (the last element is the final table representing the shortest path along the graph, stored as a List of PathEntry instances).
+     * @return A list of DijkstraStates, each representing the state at each step of the algorithm (the last element is the state representing the shortest path along the graph).
      */
-    public static List<List<PathEntry>> dijkstra(Graph graph, String start){
+    public static List<DijkstraState> dijkstra(Graph graph, String start){
 
         if(graph.getNode(start).isEmpty()){
             throw new IllegalArgumentException("The graph does not have node: " + start);
@@ -70,13 +70,13 @@ public class Graph {
 
         List<Node> visited = new ArrayList<>();
         TreeMap<String, PathEntry> entries = new TreeMap<>(String::compareTo);
-        List<List<PathEntry>> finalResult = new ArrayList<>();
+        List<DijkstraState> finalResult = new ArrayList<>();
 
         for (Node node : graph.getNodes()) {
             entries.put(node.getLabel(), new PathEntry(node.getLabel(), node.getLabel().equals(start) ? 0 : Integer.MAX_VALUE, null));
         }
 
-        finalResult.add(entries.values().stream().map(PathEntry::new).toList());
+        finalResult.add(new DijkstraState(entries.values().stream().map(PathEntry::new).toList(), "A", List.of()));
 
         // Create a priority queue where the priority is dictated by the path entry with the least distance
         PriorityQueue<Pair<Node, Integer>> searchQueue = new PriorityQueue<>(entries.size(), Comparator.comparing(Pair::getValue1));
@@ -88,7 +88,7 @@ public class Graph {
                 .collect(Collectors.toList())
         );
         int lastCost;
-        String lastNode;
+        String currentNodeLabel;
 
         while(!searchQueue.isEmpty()){
 
@@ -99,7 +99,7 @@ public class Graph {
             }
             visited.add(currentNode);
             lastCost = entry.getValue1();
-            lastNode = currentNode.getLabel();
+            currentNodeLabel = currentNode.getLabel();
             List<Pair<Node, Edge>> connectedUnvisitedNodes = graph.connectedNodesOf(currentNode)
                     .stream()
                     .filter(pair -> !visited.contains(pair.getValue0()))
@@ -107,9 +107,11 @@ public class Graph {
 
             // Need to declare these finalLastCost and finalLastNode variables because the compiler requires that variables used in a lambda must be final or effectively final
             int finalLastCost = lastCost;
-            String finalLastNode = lastNode;
+            String finalLastNode = currentNodeLabel;
+            List<Edge> connectedEdges = new ArrayList<>();
             connectedUnvisitedNodes.forEach(nodeEdgePair -> {
                 PathEntry nodeEntry = entries.get(nodeEdgePair.getValue0().getLabel());
+                connectedEdges.add(nodeEdgePair.getValue1());
                 if(finalLastCost + nodeEdgePair.getValue1().getWeight() < nodeEntry.getDistance()){
                     nodeEntry.setDistance(finalLastCost + nodeEdgePair.getValue1().getWeight());
                     nodeEntry.setPreviousVertexLabel(finalLastNode);
@@ -122,7 +124,7 @@ public class Graph {
                 }
             });
 
-            finalResult.add(entries.values().stream().map(PathEntry::new).toList());
+            finalResult.add(new DijkstraState(entries.values().stream().map(PathEntry::new).toList(), currentNodeLabel, connectedEdges));
 
         }
 
