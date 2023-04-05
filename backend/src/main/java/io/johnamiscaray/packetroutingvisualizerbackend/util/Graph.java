@@ -3,16 +3,20 @@ package io.johnamiscaray.packetroutingvisualizerbackend.util;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
+import lombok.Singular;
 import org.javatuples.Pair;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class Graph {
 
+    @Singular
     private List<Node> nodes;
+    @Singular
     private List<Edge> edges;
 
     public List<Node> getNodes() {
@@ -23,13 +27,21 @@ public class Graph {
         return Collections.unmodifiableList(edges);
     }
 
-    public Pair<Node, Edge> connectedNodesOf(Node node) {
-        return new Pair<>(null, null);
+    public List<Pair<Node, Edge>> connectedNodesOf(Node node) {
+        List<Edge> connectedEdges = edges.stream()
+                .filter(edge -> edge.getNode1().equals(node.getLabel()) || edge.getNode2().equals(node.getLabel()))
+                .collect(Collectors.toList());
+        List<Pair<Node, Edge>> result = new ArrayList<>();
+        for (Edge e : connectedEdges) {
+            Optional<Node> other = node.getLabel().equals(e.getNode1()) ? getNode(e.getNode2()) : getNode(e.getNode1());
+            result.add(new Pair<>(other.orElseThrow(), e));
+        }
+        return result;
     }
 
-    public Pair<Node, Edge> connectedNodesOf(String label) {
+    public List<Pair<Node, Edge>> connectedNodesOf(String label) {
 
-        Node node = getNode(label).orElseThrow(() -> new NoSuchElementException("The node: " + label + " does not exist."));
+        Node node = getNode(label).orElseThrow();
         return connectedNodesOf(node);
 
     }
