@@ -37,6 +37,13 @@ public class DijkstraTest {
     );
 
     @Test
+    public void testInvalidStartFails() {
+
+        assertThrows(IllegalArgumentException.class, () -> Graph.dijkstra(graph1, "F"));
+
+    }
+
+    @Test
     public void testGraph1Steps() {
 
         assertEquals(List.of(

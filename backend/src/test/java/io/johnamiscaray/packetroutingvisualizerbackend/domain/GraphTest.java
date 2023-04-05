@@ -50,6 +50,20 @@ class GraphTest {
     }
 
     @Test
+    public void testGraphGetsConnectedNodesOfB() {
+
+        assertEquals(List.of(new Pair<>(nodes.get(0), edges.get(0))), graph.connectedNodesOf("B"));
+
+    }
+
+    @Test
+    public void testGraphGetsConnectedNodesOfC() {
+
+        assertEquals(List.of(new Pair<>(nodes.get(0), edges.get(1))), graph.connectedNodesOf("C"));
+
+    }
+
+    @Test
     public void testGraphGetsConnectedNodesOfAInDisconnectedGraph() {
 
         assertEquals(List.of(), disconnectedGraph.connectedNodesOf("A"));
