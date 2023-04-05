@@ -21,6 +21,21 @@ public class DijkstraTest {
             )
     );
 
+    private final Graph graph2 = new Graph(
+            List.of(new Node("A"), new Node("B"), new Node("C"), new Node("D"), new Node("E"), new Node("F")),
+            List.of(
+                    new Edge("A", "B", 2),
+                    new Edge("A", "D", 8),
+                    new Edge("B", "D", 5),
+                    new Edge("B", "E", 6),
+                    new Edge("D", "E", 3),
+                    new Edge("D", "F", 2),
+                    new Edge("E", "F", 1),
+                    new Edge("E", "C", 9),
+                    new Edge("F", "C", 3)
+            )
+    );
+
     @Test
     public void testGraph1() {
 
@@ -31,6 +46,20 @@ public class DijkstraTest {
                 new PathEntry("D", 1, "A"),
                 new PathEntry("E", 2, "D")
         ), Graph.dijkstra(graph1, "A"));
+
+    }
+
+    @Test
+    public void testGraph2() {
+
+        assertEquals(List.of(
+                new PathEntry("A", 0, null),
+                new PathEntry("B", 2, "A"),
+                new PathEntry("C", 12, "F"),
+                new PathEntry("D", 7, "B"),
+                new PathEntry("E", 8, "B"),
+                new PathEntry("F", 9, "D")
+        ), Graph.dijkstra(graph2, "A"));
 
     }
 
