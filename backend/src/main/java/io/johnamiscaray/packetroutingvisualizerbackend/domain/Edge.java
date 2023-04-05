@@ -1,4 +1,4 @@
-package io.johnamiscaray.packetroutingvisualizerbackend.util;
+package io.johnamiscaray.packetroutingvisualizerbackend.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

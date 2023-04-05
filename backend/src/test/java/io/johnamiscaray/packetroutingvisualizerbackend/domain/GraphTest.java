@@ -1,4 +1,4 @@
-package io.johnamiscaray.packetroutingvisualizerbackend.util;
+package io.johnamiscaray.packetroutingvisualizerbackend.domain;
 
 import org.javatuples.Pair;
 import org.junit.jupiter.api.Test;
