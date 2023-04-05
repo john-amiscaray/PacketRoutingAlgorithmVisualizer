@@ -37,7 +37,9 @@ public class DijkstraTest {
     );
 
     @Test
-    public void testGraph1() {
+    public void testGraph1FinalResult() {
+
+        List<List<PathEntry>> result = Graph.dijkstra(graph1, "A");
 
         assertEquals(List.of(
                 new PathEntry("A", 0, null),
@@ -45,12 +47,14 @@ public class DijkstraTest {
                 new PathEntry("C", 7, "E"),
                 new PathEntry("D", 1, "A"),
                 new PathEntry("E", 2, "D")
-        ), Graph.dijkstra(graph1, "A"));
+        ), result.get(result.size() - 1));
 
     }
 
     @Test
-    public void testGraph2() {
+    public void testGraph2FinalResult() {
+
+        List<List<PathEntry>> result = Graph.dijkstra(graph2, "A");
 
         assertEquals(List.of(
                 new PathEntry("A", 0, null),
@@ -59,7 +63,7 @@ public class DijkstraTest {
                 new PathEntry("D", 7, "B"),
                 new PathEntry("E", 8, "B"),
                 new PathEntry("F", 9, "D")
-        ), Graph.dijkstra(graph2, "A"));
+        ), result.get(result.size() - 1));
 
     }
 

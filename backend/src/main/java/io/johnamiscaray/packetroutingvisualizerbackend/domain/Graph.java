@@ -60,9 +60,9 @@ public class Graph {
      *
      * @param graph The graph to compute the algorithm on
      * @param start The starting node for the shortest path
-     * @return A list of lists of path entries, each representing the state at each step of the algorithm
+     * @return A list of lists of path entries, each representing the state at each step of the algorithm (the last element is the final table representing the shortest path along the graph, stored as a List of PathEntry instances).
      */
-    public static List<PathEntry> dijkstra(Graph graph, String start){
+    public static List<List<PathEntry>> dijkstra(Graph graph, String start){
 
         if(graph.getNode(start).isEmpty()){
             throw new IllegalArgumentException("The graph does not have node: " + start);
@@ -70,10 +70,13 @@ public class Graph {
 
         List<Node> visited = new ArrayList<>();
         TreeMap<String, PathEntry> entries = new TreeMap<>(String::compareTo);
+        List<List<PathEntry>> finalResult = new ArrayList<>();
 
         for (Node node : graph.getNodes()) {
             entries.put(node.getLabel(), new PathEntry(node.getLabel(), node.getLabel().equals(start) ? 0 : Integer.MAX_VALUE, null));
         }
+
+        finalResult.add(entries.values().stream().toList());
 
         // Create a priority queue where the priority is dictated by the path entry with the least distance
         PriorityQueue<Pair<Node, Integer>> searchQueue = new PriorityQueue<>(entries.size(), Comparator.comparing(Pair::getValue1));
@@ -119,9 +122,11 @@ public class Graph {
                 }
             });
 
+            finalResult.add(entries.values().stream().toList());
+
         }
 
-        return entries.values().stream().toList();
+        return finalResult;
 
     }
 
