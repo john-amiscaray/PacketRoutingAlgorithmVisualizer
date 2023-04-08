@@ -1,0 +1,45 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Packet Routing Algorithms Visualized</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    <main>
+        <canvas id="graphics-pane"></canvas>
+        <div id="controls">
+            <header>
+                <h2>Edit Graph</h2>
+            </header>
+            <div class="input-container">
+                <label for="add-node">Add Node</label>
+                <input id="add-node" type="text">
+            </div>
+            <fieldset>
+                <legend>New Edge</legend>
+                <div class="input-container">
+                    <label for="node-from">Start Node</label>
+                    <input id="node-from" type="text">
+                </div>
+                <div class="input-container">
+                    <label for="node-to">End Node</label>
+                    <input id="node-to" type="text">
+                </div>
+                <div class="input-container">
+                    <label for="weight">Weight</label>
+                    <input id="weight" type="number" step="1" min="1">
+                </div>
+            </fieldset>
+            <div class="input-container">
+                <label for="delete-node">Remove Node</label>
+                <input id="delete-node" type="text">
+            </div>
+            <button id="submit">Update</button>
+        </div>
+    </main>
+    <script src="https://code.createjs.com/1.0.0/createjs.min.js"></script>
+    <script src="./main.js"></script>
+</body>
+</html>
