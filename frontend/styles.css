@@ -47,6 +47,7 @@ main {
 #controls header {
 
     border-bottom: 1px solid gray;
+    border-top: 1px solid gray;
 
 }
 
@@ -78,5 +79,11 @@ main {
 
     width: 100px;
     margin-left: auto;
+
+}
+
+.input-container label {
+
+    font-size: 0.8rem;
 
 }
