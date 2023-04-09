@@ -39,6 +39,17 @@
                 <input id="delete-node" type="text">
             </div>
             <button id="submit" onclick="editGraphSubmit()">Update</button>
+            <header>
+                <h2>Simulate</h2>
+            </header>
+            <div class="input-container">
+                <label for="starting-node">Starting Node</label>
+                <input id="starting-node" type="text">
+            </div>
+            <div class="input-container">
+                <label for="dijkstra-start">Dijkstra's Algorithm</label>
+                <input onclick="dijkstraStart();" id="dijkstra-start" type="button" value="Start">
+            </div>
         </div>
     </main>
     <script src="https://code.createjs.com/1.0.0/createjs.min.js"></script>
