@@ -43,8 +43,12 @@
                 <h2>Simulate</h2>
             </header>
             <div class="input-container">
-                <label for="">Dijkstra's Algorithm</label>
-                <input type="button" value="Start">
+                <label for="starting-node">Starting Node</label>
+                <input id="starting-node" type="text">
+            </div>
+            <div class="input-container">
+                <label for="dijkstra-start">Dijkstra's Algorithm</label>
+                <input onclick="dijkstraStart();" id="dijkstra-start" type="button" value="Start">
             </div>
         </div>
     </main>

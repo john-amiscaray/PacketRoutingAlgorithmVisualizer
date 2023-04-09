@@ -51,6 +51,12 @@ main {
 
 }
 
+#controls header:first-child {
+
+    border-top: none;
+
+}
+
 #controls fieldset {
 
     display: flex;
