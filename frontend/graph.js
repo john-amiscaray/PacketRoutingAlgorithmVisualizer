@@ -1,9 +1,6 @@
-let graph = {
+let storedGraph = localStorage.getItem("graph");
 
-    nodes: [],
-    edges: []
-
-};
+let graph = storedGraph ? JSON.parse(storedGraph) : { nodes: [], edges: [] };
 
 function addNode(label) {
 
@@ -50,4 +47,10 @@ function removeNode(label) {
 
 }
 
-export { graph, addNode, addEdge, removeNode };
+function saveGraph() {
+
+    localStorage.setItem("graph", JSON.stringify(graph));
+
+}
+
+export { graph, addNode, addEdge, removeNode, saveGraph };

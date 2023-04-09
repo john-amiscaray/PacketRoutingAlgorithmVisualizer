@@ -1,4 +1,4 @@
-import { addEdge, addNode, graph, removeNode } from "./graph.js";
+import { addEdge, addNode, graph, removeNode, saveGraph } from "./graph.js";
 
 let stage = new createjs.Stage("graphics-pane");
 
@@ -44,7 +44,8 @@ function editGraphSubmit() {
     if(failed){
         alert(errorMessage);
     }
-    console.log(graph);
+
+    saveGraph();
 
 }
 
