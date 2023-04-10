@@ -1,39 +1,28 @@
 :root {
-
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
 html {
-
     height: 100%;
-
 }
 
 body {
-
     margin: 0;
     height: 100%;
-
 }
 
 main {
-
     display: flex;
     flex-direction: row;
     height: 100%;
-
 }
 
 #graphics-pane {
-    
     border: 2px solid black;
     width: 85%;
-
 }
 
 #controls {
-
     width: 15%;
     min-width: 200px;
     text-align: center;
@@ -41,55 +30,44 @@ main {
     flex-direction: column;
     gap: 10px;
     padding: 0 5px;
-
 }
 
 #controls header {
-
     border-bottom: 1px solid gray;
     border-top: 1px solid gray;
-
 }
 
 #controls header:first-child {
-
     border-top: none;
-
 }
 
 #controls fieldset {
-
     display: flex;
     flex-direction: column;
     gap: 10px;
-
 }
 
 #controls fieldset legend {
-
     font-size: 0.8rem;
-
 }
 
 .input-container {
-
     display: flex;
     gap: 5px;
     text-align: left;
     font-size: 1rem;
     padding: 0 5px;
-
 }
 
 .input-container input {
-
     width: 100px;
     margin-left: auto;
-
 }
 
 .input-container label {
-
     font-size: 0.8rem;
+}
 
+button {
+    background-color: lightgreen;
 }
