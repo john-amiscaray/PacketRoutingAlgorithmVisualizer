@@ -16,6 +16,17 @@ function addNode(label) {
 }
 
 function addEdge(node1, node2, weight) {
+    const edgeIndex = graph.edges.findIndex((edge) => {
+        return (
+            (edge.node1 === node1 &&
+                edge.node2 === node2 &&
+                edge.weight === weight) ||
+            (edge.node1 === node2 &&
+                edge.node2 === node1 &&
+                edge.weight === weight)
+        );
+    });
+
     if (
         graph.nodes.filter((node) => node.label === node1).length === 0 ||
         graph.nodes.filter((node) => node.label === node2).length === 0
@@ -28,6 +39,11 @@ function addEdge(node1, node2, weight) {
         return {
             success: false,
             error: "The graph cannot contain loops",
+        };
+    } else if (edgeIndex !== -1) {
+        return {
+            success: false,
+            error: "Edge already exists",
         };
     }
     graph.edges.push({ node1, node2, weight });

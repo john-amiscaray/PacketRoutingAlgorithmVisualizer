@@ -68,6 +68,20 @@ main {
     font-size: 0.8rem;
 }
 
-button {
+.posButtonAction {
     background-color: lightgreen;
+    color: darkblue;
+    border: 0px;
+}
+
+.negButtonAction {
+    background-color: lightcoral;
+    color: darkblue;
+    border: 0px;
+}
+
+.startButton {
+    background-color: aquamarine;
+    color: darkblue;
+    border: 0px;
 }
