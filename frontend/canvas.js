@@ -1,11 +1,11 @@
 import { graph } from "./graph.js";
 import { stage } from "./main.js"
-import createjs from 'createjs';
 
-// Constants for node and edge styling
+// Constants for node, edge, and label styling
 const NODE_RADIUS = 20;
 const NODE_COLOR = '#5AE873';
 const EDGE_COLOR = '#000000';
+const LABEL_COLOR = '#FFF';
 
 // Function to draw a node
 function drawNode(node) {
@@ -15,7 +15,7 @@ function drawNode(node) {
     circle.y = Math.random() * stage.canvas.height;
 
     // Add a text label to the node
-    const label = new createjs.Text(node.label, 'bold 16px Arial', '#FFF');
+    const label = new createjs.Text(node.label, 'bold 16px Arial', LABEL_COLOR);
     label.textAlign = 'center';
     label.textBaseline = 'middle';
 

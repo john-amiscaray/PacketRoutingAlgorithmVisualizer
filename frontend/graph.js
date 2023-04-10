@@ -12,7 +12,7 @@ function addNode(label) {
         };
     }
     graph.nodes.push({ label });
-    // drawNode(label); 
+    drawNode({ label }); 
     return {
         success: true
     };
@@ -33,7 +33,7 @@ function addEdge(node1, node2, weight){
         };
     }
     graph.edges.push({ node1, node2, weight });
-    // drawEdge();
+    drawEdge({ node1, node2, weight });
     return {
         success: true
     };
