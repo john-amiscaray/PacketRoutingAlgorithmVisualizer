@@ -105,6 +105,19 @@ async function computeDijkstra(start) {
     });
 }
 
+async function computeBellmanFord(start) {
+    return await fetch("http://localhost:8080/graph/bellmanFord", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            graph,
+            start,
+        }),
+    });
+}
+
 export {
     graph,
     addNode,
@@ -113,4 +126,5 @@ export {
     removeEdge,
     saveGraph,
     computeDijkstra,
+    computeBellmanFord
 };

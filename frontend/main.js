@@ -6,6 +6,7 @@ import {
     removeNode,
     removeEdge,
     saveGraph,
+    computeBellmanFord,
 } from "./graph.js";
 
 let stage = new createjs.Stage("graphics-pane");
@@ -100,5 +101,20 @@ function dijkstraStart() {
         .then((res) => console.log(res));
 }
 
+function bellmanFordStart() {
+    let start = $("#starting-node").val().trim();
+
+    if (graph.nodes.filter((node) => node.label === start).length === 0) {
+        alert("Please select a valid starting node");
+        return;
+    }
+
+    computeBellmanFord(start)
+        .then((res) => res.json())
+        // res in the following line is the array of DijkstraState objects from the backend. TODO: use them for the animation
+        .then((res) => console.log(res));
+}
+
 window.editGraphSubmit = editGraphSubmit;
 window.dijkstraStart = dijkstraStart;
+window.bellmanFordStart = bellmanFordStart;
