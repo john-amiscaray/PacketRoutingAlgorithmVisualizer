@@ -46,6 +46,8 @@ function removeNode(label) {
     };
 }
 
+function removeEdge(node1, node2, weight) {}
+
 function saveGraph() {
     localStorage.setItem("graph", JSON.stringify(graph));
 }
@@ -63,4 +65,12 @@ async function computeDijkstra(start) {
     });
 }
 
-export { graph, addNode, addEdge, removeNode, saveGraph, computeDijkstra };
+export {
+    graph,
+    addNode,
+    addEdge,
+    removeNode,
+    removeEdge,
+    saveGraph,
+    computeDijkstra,
+};

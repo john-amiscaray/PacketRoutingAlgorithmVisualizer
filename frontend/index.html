@@ -46,11 +46,11 @@
                         <label for="weight">Weight</label>
                         <input id="weight" type="number" step="1" min="1" />
                     </div>
-
-                    <button id="submit" onclick="editGraphSubmit('addEdge')">
-                        Add Edge
-                    </button>
                 </fieldset>
+
+                <button id="submit" onclick="editGraphSubmit('addEdge')">
+                    Add Edge
+                </button>
                 <div class="input-container">
                     <label for="delete-node">Remove Node</label>
                     <input id="delete-node" type="text" />
@@ -59,6 +59,33 @@
                 <button id="submit" onclick="editGraphSubmit('deleteNode')">
                     Delete Node
                 </button>
+
+                <fieldset>
+                    <legend>Remove Edge</legend>
+                    <div class="input-container">
+                        <label for="node-from-delete">Start Node</label>
+                        <input id="node-from-delete" type="text" />
+                    </div>
+
+                    <div class="input-container">
+                        <label for="node-to-delete">End Node</label>
+                        <input id="node-to-delete" type="text" />
+                    </div>
+
+                    <div class="input-container">
+                        <label for="weight-delete">Weight</label>
+                        <input
+                            id="weight-delete"
+                            type="number"
+                            step="1"
+                            min="1"
+                        />
+                    </div>
+
+                    <button id="submit" onclick="editGraphSubmit('deleteEdge')">
+                        Delete Edge
+                    </button>
+                </fieldset>
 
                 <header>
                     <h2>Simulate</h2>

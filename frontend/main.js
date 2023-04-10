@@ -4,6 +4,7 @@ import {
     computeDijkstra,
     graph,
     removeNode,
+    removeEdge,
     saveGraph,
 } from "./graph.js";
 
@@ -39,6 +40,16 @@ function editGraphSubmit(action) {
                 result = removeNode(nodeToDelete);
             }
             break;
+
+        case "removeEdge":
+            let delEdgeStart = $("node-from-delete").val().trim();
+            let delEdgeEnd = $("node-to-delete").val().trim();
+            let delEdgeWeight = $("weight-delete").val().trim();
+
+            if (delEdgeStart && delEdgeEnd && delEdgeWeight) {
+                result = removeEdge(delEdgeStart, delEdgeEnd, delEdgeWeight);
+            }
+            break;
     }
 
     if (result && result.success === false) {
@@ -53,6 +64,7 @@ function editGraphSubmit(action) {
             case "addNode":
                 $("#add-node").val("");
                 break;
+
             case "addEdge":
                 $("#node-from").val("");
                 $("#node-to").val("");
@@ -61,6 +73,12 @@ function editGraphSubmit(action) {
 
             case "deleteNode":
                 $("#delete-node").val("");
+                break;
+
+            case "deleteEdge":
+                $("#node-from-delete").val("");
+                $("#node-to-delete").val("");
+                $("#weight-delete").val("");
                 break;
         }
     }
