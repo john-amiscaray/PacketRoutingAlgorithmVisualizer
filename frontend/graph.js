@@ -46,7 +46,33 @@ function removeNode(label) {
     };
 }
 
-function removeEdge(node1, node2, weight) {}
+function removeEdge(node1, node2, weight) {
+    // Find the index of the edge in the graph.edges array
+    const edgeIndex = graph.edges.findIndex((edge) => {
+        return (
+            (edge.node1 === node1 &&
+                edge.node2 === node2 &&
+                edge.weight === weight) ||
+            (edge.node1 === node2 &&
+                edge.node2 === node1 &&
+                edge.weight === weight)
+        );
+    });
+
+    if (edgeIndex === -1) {
+        // If the edge is not found, return an error
+        return {
+            success: false,
+            error: `The edge does not exist between nodes ${node1} and ${node2} with a weight of ${weight}`,
+        };
+    } else {
+        // If the edge is found, remove it from the graph.edges array
+        graph.edges.splice(edgeIndex, 1);
+        return {
+            success: true,
+        };
+    }
+}
 
 function saveGraph() {
     localStorage.setItem("graph", JSON.stringify(graph));

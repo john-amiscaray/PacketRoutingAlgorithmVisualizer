@@ -41,11 +41,11 @@ function editGraphSubmit(action) {
             }
             break;
 
-        case "removeEdge":
-            let delEdgeStart = $("node-from-delete").val().trim();
-            let delEdgeEnd = $("node-to-delete").val().trim();
-            let delEdgeWeight = $("weight-delete").val().trim();
-
+        case "deleteEdge":
+            let delEdgeStart = $("#node-from-delete").val().trim();
+            let delEdgeEnd = $("#node-to-delete").val().trim();
+            let delEdgeWeight = $("#weight-delete").val().trim();
+            console.log(delEdgeStart);
             if (delEdgeStart && delEdgeEnd && delEdgeWeight) {
                 result = removeEdge(delEdgeStart, delEdgeEnd, delEdgeWeight);
             }
