@@ -1,6 +1,6 @@
 package io.johnamiscaray.packetroutingvisualizerbackend.dto;
 
-import io.johnamiscaray.packetroutingvisualizerbackend.bellman.Graph2;
+import io.johnamiscaray.packetroutingvisualizerbackend.domain.Graph;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class BellmanFordRequest {
 
-    private Graph2 graph;
+    private Graph graph;
     private String start;
 
 }

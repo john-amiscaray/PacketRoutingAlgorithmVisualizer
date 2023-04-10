@@ -1,6 +1,6 @@
 package io.johnamiscaray.packetroutingvisualizerbackend.controllers;
 
-import io.johnamiscaray.packetroutingvisualizerbackend.bellman.BellmanFordState;
+import io.johnamiscaray.packetroutingvisualizerbackend.domain.BellmanFordState;
 import io.johnamiscaray.packetroutingvisualizerbackend.bellman.Graph2;
 import io.johnamiscaray.packetroutingvisualizerbackend.domain.DijkstraState;
 import io.johnamiscaray.packetroutingvisualizerbackend.domain.Graph;
@@ -32,9 +32,4 @@ public class GraphController {
 
     }
 
-    @RequestMapping("/")
-    public String getMessage() {
-        return "Hello World";
-    }
 }
-
