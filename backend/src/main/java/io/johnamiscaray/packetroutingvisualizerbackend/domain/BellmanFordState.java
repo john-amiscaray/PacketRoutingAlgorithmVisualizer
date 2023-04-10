@@ -12,5 +12,6 @@ import java.util.List;
 public class BellmanFordState {
 
     private List<PathEntry> pathTable;
+    private List<PathEntry> updates;
 
 }

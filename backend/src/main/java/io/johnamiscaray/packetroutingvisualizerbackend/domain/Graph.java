@@ -160,9 +160,10 @@ public class Graph {
             entries.add(new PathEntry(node.getLabel(), node.getLabel().equals(start) ? 0 : Integer.MAX_VALUE, null));
         }
 
-        finalResult.add(new BellmanFordState(new ArrayList<>(entries)));
+        finalResult.add(new BellmanFordState(new ArrayList<>(entries), new ArrayList<>()));
 
-        for (int i = 1; i < graph.getNodes().size(); i++) {
+        for (int i = 0; i < graph.getNodes().size() - 1; i++) {
+            List<PathEntry> updates = new ArrayList<>();
             for (Edge e : edges) {
                 String node1Label = e.getNode1();
                 String node2Label = e.getNode2();
@@ -175,12 +176,13 @@ public class Graph {
 
                     if (newDistance < node2Entry.getDistance()) {
                         PathEntry updatedEntry = new PathEntry(node2Label, newDistance, node1Label);
+                        updates.add(updatedEntry);
                         int index = entries.indexOf(node2Entry);
                         entries.set(index, updatedEntry);
                     }
                 }
             }
-            finalResult.add(new BellmanFordState(new ArrayList<>(entries)));
+            finalResult.add(new BellmanFordState(new ArrayList<>(entries), updates));
         }
 
         return finalResult;
