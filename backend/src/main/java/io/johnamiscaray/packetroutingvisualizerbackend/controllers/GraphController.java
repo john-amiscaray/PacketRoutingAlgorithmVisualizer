@@ -1,7 +1,6 @@
 package io.johnamiscaray.packetroutingvisualizerbackend.controllers;
 
 import io.johnamiscaray.packetroutingvisualizerbackend.domain.BellmanFordState;
-import io.johnamiscaray.packetroutingvisualizerbackend.bellman.Graph2;
 import io.johnamiscaray.packetroutingvisualizerbackend.domain.DijkstraState;
 import io.johnamiscaray.packetroutingvisualizerbackend.domain.Graph;
 import io.johnamiscaray.packetroutingvisualizerbackend.dto.DijkstraRequest;
@@ -28,7 +27,7 @@ public class GraphController {
     @PostMapping("/bellmanFord")
     public ResponseEntity<List<BellmanFordState>> computeBellman(@RequestBody BellmanFordRequest request) {
 
-        return ResponseEntity.ok(Graph2.bellmanFord(request.getGraph(), request.getStart()));
+        return ResponseEntity.ok(Graph.bellmanFord(request.getGraph(), request.getStart()));
 
     }
 
