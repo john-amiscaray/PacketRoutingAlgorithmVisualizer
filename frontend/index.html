@@ -1,59 +1,133 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Packet Routing Algorithms Visualized</title>
-    <link rel="stylesheet" href="./styles.css">
-    <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
-</head>
-<body>
-    <main>
-        <canvas id="graphics-pane"></canvas>
-        <div id="controls">
-            <header>
-                <h2>Edit Graph</h2>
-            </header>
-            <div class="input-container">
-                <label for="add-node">Add Node</label>
-                <input id="add-node" type="text">
-            </div>
-            <fieldset>
-                <legend>New Edge</legend>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Packet Routing Algorithms Visualized</title>
+        <link rel="stylesheet" href="./styles.css" />
+        <script
+            src="https://code.jquery.com/jquery-3.6.3.min.js"
+            integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU="
+            crossorigin="anonymous"
+        ></script>
+    </head>
+
+    <body>
+        <main>
+            <canvas id="graphics-pane"></canvas>
+
+            <div id="controls">
+                <header>
+                    <h2>Edit Graph</h2>
+                </header>
+
                 <div class="input-container">
-                    <label for="node-from">Start Node</label>
-                    <input id="node-from" type="text">
+                    <label for="add-node">Add Node</label>
+                    <input id="add-node" type="text" />
                 </div>
+                <button
+                    class="posButtonAction"
+                    id="submit"
+                    onclick="editGraphSubmit('addNode')"
+                >
+                    <span>Add Node </span>
+                </button>
+
+                <fieldset>
+                    <legend>New Edge</legend>
+                    <div class="input-container">
+                        <label for="node-from">Start Node</label>
+                        <input id="node-from" type="text" />
+                    </div>
+
+                    <div class="input-container">
+                        <label for="node-to">End Node</label>
+                        <input id="node-to" type="text" />
+                    </div>
+
+                    <div class="input-container">
+                        <label for="weight">Weight</label>
+                        <input id="weight" type="number" step="1" min="1" />
+                    </div>
+
+                    <button
+                        class="posButtonAction"
+                        id="submit"
+                        onclick="editGraphSubmit('addEdge')"
+                    >
+                        <span>Add Edge</span>
+                    </button>
+                </fieldset>
+
                 <div class="input-container">
-                    <label for="node-to">End Node</label>
-                    <input id="node-to" type="text">
+                    <label for="delete-node">Remove Node</label>
+                    <input id="delete-node" type="text" />
                 </div>
+
+                <button
+                    class="negButtonAction"
+                    id="submit"
+                    onclick="editGraphSubmit('deleteNode')"
+                >
+                    <span>Delete Node</span>
+                </button>
+
+                <fieldset>
+                    <legend>Remove Edge</legend>
+                    <div class="input-container">
+                        <label for="node-from-delete">Start Node</label>
+                        <input id="node-from-delete" type="text" />
+                    </div>
+
+                    <div class="input-container">
+                        <label for="node-to-delete">End Node</label>
+                        <input id="node-to-delete" type="text" />
+                    </div>
+
+                    <div class="input-container">
+                        <label for="weight-delete">Weight</label>
+                        <input
+                            id="weight-delete"
+                            type="number"
+                            step="1"
+                            min="1"
+                        />
+                    </div>
+
+                    <button
+                        class="negButtonAction"
+                        id="submit"
+                        onclick="editGraphSubmit('deleteEdge')"
+                    >
+                        <span>Delete Edge</span>
+                    </button>
+                </fieldset>
+
+                <header>
+                    <h2>Simulate</h2>
+                </header>
+
                 <div class="input-container">
-                    <label for="weight">Weight</label>
-                    <input id="weight" type="number" step="1" min="1">
+                    <label for="starting-node">Starting Node</label>
+                    <input id="starting-node" type="text" />
                 </div>
-            </fieldset>
-            <div class="input-container">
-                <label for="delete-node">Remove Node</label>
-                <input id="delete-node" type="text">
+
+                <div class="input-container">
+                    <label for="dijkstra-start">Dijkstra's Algorithm</label>
+                    <input
+                        class="startButton"
+                        onclick="dijkstraStart();"
+                        id="dijkstra-start"
+                        type="button"
+                        value="Start"
+                    />
+                </div>
             </div>
-            <button id="submit" onclick="editGraphSubmit()">Update</button>
-            <header>
-                <h2>Simulate</h2>
-            </header>
-            <div class="input-container">
-                <label for="starting-node">Starting Node</label>
-                <input id="starting-node" type="text">
-            </div>
-            <div class="input-container">
-                <label for="dijkstra-start">Dijkstra's Algorithm</label>
-                <input onclick="dijkstraStart();" id="dijkstra-start" type="button" value="Start">
-            </div>
-        </div>
-    </main>
-    <script src="https://code.createjs.com/1.0.0/createjs.min.js"></script>
-    <script type="module" src="./graph.js"></script>
-    <script type="module" src="./main.js"></script>
-</body>
+        </main>
+
+        <script src="https://code.createjs.com/1.0.0/createjs.min.js"></script>
+        <script type="module" src="./graph.js"></script>
+        <script type="module" src="./main.js"></script>
+    </body>
 </html>
