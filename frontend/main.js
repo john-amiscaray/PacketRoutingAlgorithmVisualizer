@@ -1,4 +1,5 @@
 import { addEdge, addNode, computeDijkstra, graph, removeNode, saveGraph } from './graph.js';
+import createjs from 'createjs';
 
 let stage = new createjs.Stage('graphics-pane');
 
