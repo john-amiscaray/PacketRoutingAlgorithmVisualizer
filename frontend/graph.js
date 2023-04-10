@@ -60,13 +60,11 @@ function removeEdge(node1, node2, weight) {
     });
 
     if (edgeIndex === -1) {
-        // If the edge is not found, return an error
         return {
             success: false,
             error: `The edge does not exist between nodes ${node1} and ${node2} with a weight of ${weight}`,
         };
     } else {
-        // If the edge is found, remove it from the graph.edges array
         graph.edges.splice(edgeIndex, 1);
         return {
             success: true,
