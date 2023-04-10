@@ -2,28 +2,27 @@ import { graph } from "./graph.js";
 import { stage } from "./main.js"
 
 // Constants for node, edge, and label styling
-const NODE_RADIUS = 20;
+const NODE_RADIUS = 12;
 const NODE_COLOR = '#5AE873';
 const EDGE_COLOR = '#000000';
-const LABEL_COLOR = '#FFF';
+const LABEL_COLOR = '#F0F0F0';
 
 // Function to draw a node
 function drawNode(node) {
     const circle = new createjs.Shape();
     circle.graphics.beginFill(NODE_COLOR).drawCircle(0, 0, NODE_RADIUS);
-    circle.x = Math.random() * stage.canvas.width;
-    circle.y = Math.random() * stage.canvas.height;
 
     // Add a text label to the node
-    const label = new createjs.Text(node.label, 'bold 16px Arial', LABEL_COLOR);
+    const label = new createjs.Text(node.label, 'bold 10px Arial', LABEL_COLOR);
     label.textAlign = 'center';
     label.textBaseline = 'middle';
 
+    // Create a container for the circle and label
     const container = new createjs.Container();
+    container.x = Math.random() * (stage.canvas.width * 0.85);
+    container.y = Math.random() * (stage.canvas.width * 0.85);
     container.addChild(circle, label);
-    container.x = circle.x;
-    container.y = circle.y;
-
+    
     stage.addChild(container);
     stage.update();
 }
