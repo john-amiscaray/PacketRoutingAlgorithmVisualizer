@@ -72,12 +72,50 @@ main {
     background-color: lightgreen;
     color: darkblue;
     border: 0px;
+    transition-delay: 0.1s;
+}
+
+.posButtonAction:hover {
+    background-color: rgb(187, 247, 187);
+    color: black;
+}
+
+.posButtonAction span:after {
+    content: "\2795";
+    position: relative;
+    opacity: 0;
+    right: -20px;
+    transition: 0.5s;
+}
+
+.posButtonAction:hover span:after {
+    opacity: 1;
+    right: 0;
 }
 
 .negButtonAction {
     background-color: lightcoral;
     color: darkblue;
     border: 0px;
+    transition-delay: 0.1s;
+}
+
+.negButtonAction:hover {
+    background-color: rgb(246, 163, 163);
+    color: black;
+}
+
+.negButtonAction span:after {
+    content: "\2796";
+    position: relative;
+    opacity: 0;
+    right: -20px;
+    transition: 0.5s;
+}
+
+.negButtonAction:hover span:after {
+    opacity: 1;
+    right: 0;
 }
 
 .startButton {
