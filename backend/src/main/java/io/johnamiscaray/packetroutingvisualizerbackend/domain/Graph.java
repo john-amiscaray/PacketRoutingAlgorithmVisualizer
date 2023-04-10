@@ -160,7 +160,7 @@ public class Graph {
             entries.add(new PathEntry(node.getLabel(), node.getLabel().equals(start) ? 0 : Integer.MAX_VALUE, null));
         }
 
-        finalResult.add(new BellmanFordState(new ArrayList<>(entries), new ArrayList<>(edges)));
+        finalResult.add(new BellmanFordState(new ArrayList<>(entries)));
 
         for (int i = 1; i < graph.getNodes().size(); i++) {
             for (Edge e : edges) {
@@ -180,7 +180,7 @@ public class Graph {
                     }
                 }
             }
-            finalResult.add(new BellmanFordState(new ArrayList<>(entries), new ArrayList<>(edges)));
+            finalResult.add(new BellmanFordState(new ArrayList<>(entries)));
         }
 
         return finalResult;

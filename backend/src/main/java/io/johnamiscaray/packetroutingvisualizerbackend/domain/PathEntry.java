@@ -21,4 +21,5 @@ public class PathEntry {
         distance = entry.distance;
         previousVertexLabel = entry.previousVertexLabel;
     }
+
 }
