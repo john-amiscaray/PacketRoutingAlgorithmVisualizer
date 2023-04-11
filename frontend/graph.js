@@ -100,6 +100,12 @@ function saveGraph() {
     localStorage.setItem("graph", JSON.stringify(graph));
 }
 
+function clearGraph() {
+    localStorage.removeItem("graph");
+    graph = { nodes: [], edges: [] };
+    redraw();
+}
+
 async function computeDijkstra(start) {
     return await fetch("http://localhost:8080/graph/dijkstra", {
         method: "POST",
@@ -133,6 +139,7 @@ export {
     removeNode,
     removeEdge,
     saveGraph,
+    clearGraph,
     computeDijkstra,
     computeBellmanFord
 };
