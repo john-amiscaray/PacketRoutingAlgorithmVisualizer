@@ -4,8 +4,11 @@ import { stage } from "./main.js"
 // Constants for node, edge, and label styling
 const NODE_RADIUS = 45;
 const NODE_COLOR = 'DeepSkyBlue';
-const EDGE_COLOR = '#000000';
+const EDGE_COLOR = 'Red';
 const LABEL_COLOR = 'White';
+const WEIGHT_COLOR = 'Black';
+
+// let coordinates = { nodes: [], edges: [] };
 
 stage.canvas.width = window.innerWidth * 0.85;
 stage.canvas.height = window.innerHeight * 0.85;
@@ -25,7 +28,12 @@ function drawNode(node) {
     container.x = (Math.random() * stage.canvas.width) - NODE_RADIUS;
     container.y = (Math.random() * stage.canvas.height) - NODE_RADIUS;
     container.addChild(circle, label);
-    
+
+    // Store the coordinates of the node drawing
+    // coordinates.nodes.push({ node, container });
+    node.x = container.x;
+    node.y = container.y;
+
     stage.addChild(container);
     stage.update();
 }
@@ -36,9 +44,9 @@ function drawEdge(edge) {
     const end = graph.nodes.find(node => node.label === edge.node2);
 
     const line = new createjs.Shape();
-    line.graphics.setStrokeStyle(2).beginStroke(EDGE_COLOR).moveTo(start.x, start.y).lineTo(end.x, end.y);
+    line.graphics.setStrokeStyle(edge.weight).beginStroke(EDGE_COLOR).moveTo(start.x, start.y).lineTo(end.x, end.y);
 
-    const weight = new createjs.Text(edge.weight.toString(), '16px Arial', 'White');
+    const weight = new createjs.Text(edge.weight.toString(), 'bold 25px Arial', WEIGHT_COLOR);
     weight.textAlign = 'center';
     weight.textBaseline = 'middle';
     weight.x = (start.x + end.x) / 2;
