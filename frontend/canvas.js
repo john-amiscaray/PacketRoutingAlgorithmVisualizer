@@ -8,8 +8,6 @@ const EDGE_COLOR = 'Red';
 const LABEL_COLOR = 'White';
 const WEIGHT_COLOR = 'Black';
 
-// let coordinates = { nodes: [], edges: [] };
-
 stage.canvas.width = window.innerWidth * 0.85;
 stage.canvas.height = window.innerHeight * 0.85;
 
@@ -30,7 +28,6 @@ function drawNode(node) {
     container.addChild(circle, label);
 
     // Store the coordinates of the node drawing
-    // coordinates.nodes.push({ node, container });
     node.x = container.x;
     node.y = container.y;
 
@@ -49,10 +46,10 @@ function drawEdge(edge) {
     const weight = new createjs.Text(edge.weight.toString(), 'bold 25px Arial', WEIGHT_COLOR);
     weight.textAlign = 'center';
     weight.textBaseline = 'middle';
-    weight.x = (start.x + end.x) / 2;
-    weight.y = (start.y + end.y) / 2;
 
     const container = new createjs.Container();
+    container.x = (start.x + end.x) / 2;
+    container.y = (start.y + end.y) / 2;
     container.addChild(line, weight);
 
     stage.addChild(container);
