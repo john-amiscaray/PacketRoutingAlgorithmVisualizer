@@ -1,4 +1,4 @@
-import { addEdge, addNode, computeDijkstra, graph, removeNode, saveGraph, removeEdge } from './graph.js';
+import { addEdge, addNode, computeDijkstra, graph, removeNode, saveGraph, removeEdge, clearGraph } from './graph.js';
 
 import { redraw } from './canvas.js';
 
@@ -82,6 +82,14 @@ function editGraphSubmit(action) {
 
 }
 
+function clearGraphClick() {
+
+    if(confirm("Are you sure you want to clear this graph?")){
+        clearGraph();
+    }
+
+}
+
 function dijkstraStart() {
     let start = $("#starting-node").val().trim();
 
@@ -111,6 +119,7 @@ function bellmanFordStart() {
 }
 
 window.editGraphSubmit = editGraphSubmit;
+window.clearGraphClick = clearGraphClick;
 window.dijkstraStart = dijkstraStart;
 window.bellmanFordStart = bellmanFordStart;
 
