@@ -54,6 +54,12 @@ public class Graph {
 
     }
 
+    private static Optional<PathEntry> getNodeEntry(String label, List<PathEntry> entries) {
+        return entries.stream()
+                .filter(e -> e.getVertexLabel().equals(label))
+                .findFirst();
+    }
+
     /**
      *
      * Computes dijkstra's algorithm on a given graph, returning the computed path after each step represented as a DijkstraState instance
@@ -130,6 +136,56 @@ public class Graph {
 
         return finalResult;
 
+    }
+
+    /**
+     *
+     * Computes the Bellman-Ford algorithm on a given graph, returning the computed path after each step represented as a BellmanFordState instance.
+     *
+     * @param graph The graph to compute the algorithm on
+     * @param start The starting node for the shortest path
+     * @return A list of BellmanFordStates, each representing the state at each step of the algorithm (the last element is the state representing the shortest path along the graph).
+     */
+    public static List<BellmanFordState> bellmanFord(Graph graph, String start) {
+
+        if (graph.getNode(start).isEmpty()) {
+            throw new IllegalArgumentException("The graph does not have starting node: " + start);
+        }
+
+        List<PathEntry> entries = new ArrayList<>();
+        List<Edge> edges = new ArrayList<>(graph.getEdges());
+        List<BellmanFordState> finalResult = new ArrayList<>();
+
+        for (Node node : graph.getNodes()) {
+            entries.add(new PathEntry(node.getLabel(), node.getLabel().equals(start) ? 0 : Integer.MAX_VALUE, null));
+        }
+
+        finalResult.add(new BellmanFordState(new ArrayList<>(entries), new ArrayList<>()));
+
+        for (int i = 0; i < graph.getNodes().size() - 1; i++) {
+            List<PathEntry> updates = new ArrayList<>();
+            for (Edge e : edges) {
+                String node1Label = e.getNode1();
+                String node2Label = e.getNode2();
+                Optional<PathEntry> node1EntryOptional = getNodeEntry(node1Label, entries);
+                Optional<PathEntry> node2EntryOptional = getNodeEntry(node2Label, entries);
+                if (node1EntryOptional.isPresent() && node2EntryOptional.isPresent()) {
+                    PathEntry node1Entry = node1EntryOptional.get();
+                    PathEntry node2Entry = node2EntryOptional.get();
+                    int newDistance = node1Entry.getDistance() + e.getWeight();
+
+                    if (newDistance < node2Entry.getDistance()) {
+                        PathEntry updatedEntry = new PathEntry(node2Label, newDistance, node1Label);
+                        updates.add(updatedEntry);
+                        int index = entries.indexOf(node2Entry);
+                        entries.set(index, updatedEntry);
+                    }
+                }
+            }
+            finalResult.add(new BellmanFordState(new ArrayList<>(entries), updates));
+        }
+
+        return finalResult;
     }
 
 }

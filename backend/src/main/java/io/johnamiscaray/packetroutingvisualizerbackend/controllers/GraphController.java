@@ -1,8 +1,10 @@
 package io.johnamiscaray.packetroutingvisualizerbackend.controllers;
 
+import io.johnamiscaray.packetroutingvisualizerbackend.domain.BellmanFordState;
 import io.johnamiscaray.packetroutingvisualizerbackend.domain.DijkstraState;
 import io.johnamiscaray.packetroutingvisualizerbackend.domain.Graph;
 import io.johnamiscaray.packetroutingvisualizerbackend.dto.DijkstraRequest;
+import io.johnamiscaray.packetroutingvisualizerbackend.dto.BellmanFordRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,6 +21,13 @@ public class GraphController {
     public ResponseEntity<List<DijkstraState>> computeDijkstra(@RequestBody DijkstraRequest request) {
 
         return ResponseEntity.ok(Graph.dijkstra(request.getGraph(), request.getStart()));
+
+    }
+
+    @PostMapping("/bellmanFord")
+    public ResponseEntity<List<BellmanFordState>> computeBellman(@RequestBody BellmanFordRequest request) {
+
+        return ResponseEntity.ok(Graph.bellmanFord(request.getGraph(), request.getStart()));
 
     }
 
