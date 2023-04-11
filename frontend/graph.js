@@ -1,7 +1,9 @@
-import { drawNode, drawEdge } from "./canvas.js";
+import { drawNode, drawEdge, redraw } from "./canvas.js";
 let storedGraph = localStorage.getItem('graph');
 
 let graph = storedGraph ? JSON.parse(storedGraph) : { nodes: [], edges: [] };
+
+redraw();
 
 function addNode(label) {
 
