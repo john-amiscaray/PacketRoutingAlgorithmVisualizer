@@ -27,7 +27,7 @@ function drawNode(node) {
     container.y = (Math.random() * stage.canvas.height) - NODE_RADIUS;
     container.addChild(circle, label);
 
-    // Store the coordinates of the node drawing
+    // Store the coordinates of the node
     node.x = container.x;
     node.y = container.y;
 
@@ -37,23 +37,26 @@ function drawNode(node) {
 
 // Function to draw an edge on the canvas
 function drawEdge(edge) {
+    // Get the starting and ending nodes
     const start = graph.nodes.find(node => node.label === edge.node1);
     const end = graph.nodes.find(node => node.label === edge.node2);
 
+    // Create an edge to connect both nodes
     const line = new createjs.Shape();
     line.graphics.setStrokeStyle(edge.weight).beginStroke(EDGE_COLOR).moveTo(start.x, start.y).lineTo(end.x, end.y);
 
+    // Display the weight of the edge
     const weight = new createjs.Text(edge.weight.toString(), 'bold 25px Arial', WEIGHT_COLOR);
     weight.textAlign = 'center';
     weight.textBaseline = 'middle';
-
+    weight.x = (start.x + end.x) / 2;
+    weight.y = (start.y + end.y) / 2;
+    
     const container = new createjs.Container();
-    container.x = (start.x + end.x) / 2;
-    container.y = (start.y + end.y) / 2;
     container.addChild(line, weight);
-
+    
     stage.addChild(container);
-    stage.update();
+    stage.update()
 }
 
 // Function to redraw the graph on the canvas
