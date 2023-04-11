@@ -1,13 +1,6 @@
-import {
-    addEdge,
-    addNode,
-    computeDijkstra,
-    graph,
-    removeNode,
-    removeEdge,
-    saveGraph,
-    computeBellmanFord,
-} from "./graph.js";
+import { addEdge, addNode, computeDijkstra, graph, removeNode, saveGraph, removeEdge } from './graph.js';
+
+import { redraw } from './canvas.js';
 
 let stage = new createjs.Stage("graphics-pane");
 
@@ -85,6 +78,8 @@ function editGraphSubmit(action) {
     }
 
     saveGraph();
+    redraw();
+
 }
 
 function dijkstraStart() {
@@ -118,3 +113,6 @@ function bellmanFordStart() {
 window.editGraphSubmit = editGraphSubmit;
 window.dijkstraStart = dijkstraStart;
 window.bellmanFordStart = bellmanFordStart;
+
+export { stage };
+

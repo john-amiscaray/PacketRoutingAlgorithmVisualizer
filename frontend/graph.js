@@ -1,6 +1,11 @@
-let storedGraph = localStorage.getItem("graph");
+import { redraw } from "./canvas.js";
+
+
+let storedGraph = localStorage.getItem('graph');
 
 let graph = storedGraph ? JSON.parse(storedGraph) : { nodes: [], edges: [] };
+
+redraw();
 
 function addNode(label) {
     if (graph.nodes.filter((node) => node.label === label).length !== 0) {
@@ -9,7 +14,9 @@ function addNode(label) {
             error: "A node with that label already exists",
         };
     }
-    graph.nodes.push({ label });
+    let node = { label };
+    graph.nodes.push(node);
+    // drawNode(node); 
     return {
         success: true,
     };
@@ -47,6 +54,7 @@ function addEdge(node1, node2, weight) {
         };
     }
     graph.edges.push({ node1, node2, weight });
+    // drawEdge({ node1, node2, weight });
     return {
         success: true,
     };
