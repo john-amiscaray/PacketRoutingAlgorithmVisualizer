@@ -11,8 +11,9 @@ function addNode(label) {
             error: 'A node with that label already exists'
         };
     }
-    graph.nodes.push({ label });
-    drawNode({ label }); 
+    let node = { label };
+    graph.nodes.push(node);
+    drawNode(node); 
     return {
         success: true
     };

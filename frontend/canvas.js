@@ -27,10 +27,9 @@ function drawNode(node) {
     container.y = (Math.random() * stage.canvas.height) - NODE_RADIUS;
     container.addChild(circle, label);
 
-    // Store the coordinates of the node
     node.x = container.x;
     node.y = container.y;
-
+    
     stage.addChild(container);
     stage.update();
 }
