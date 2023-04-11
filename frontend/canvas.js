@@ -11,6 +11,18 @@ const WEIGHT_COLOR = 'Black';
 stage.canvas.width = window.innerWidth * 0.85;
 stage.canvas.height = window.innerHeight * 0.85;
 
+function randomPositionX() {
+
+    return (Math.random() * (stage.canvas.width - NODE_RADIUS)) + NODE_RADIUS;
+
+}
+
+function randomPositionY() {
+
+    return (Math.random() * (stage.canvas.height - NODE_RADIUS)) + NODE_RADIUS;
+
+}
+
 // Function to draw a node
 function drawNode(node) {
     const circle = new createjs.Shape();
@@ -23,8 +35,8 @@ function drawNode(node) {
 
     // Create a container for the circle and label
     const container = new createjs.Container();
-    container.x = node.x || (Math.random() * stage.canvas.width) - NODE_RADIUS;
-    container.y = node.y || (Math.random() * stage.canvas.height) - NODE_RADIUS;
+    container.x = node.x || randomPositionX();
+    container.y = node.y || randomPositionY();
     container.addChild(circle, label);
 
     node.x = container.x;
