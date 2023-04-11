@@ -55,15 +55,15 @@ function drawEdge(edge) {
     container.addChild(line, weight);
     
     stage.addChild(container);
-    stage.update()
+    stage.update();
 }
 
 // Function to redraw the graph on the canvas
 function redraw() {
     stage.removeAllChildren();
     
-    graph.nodes.forEach(node => drawNode(node));
     graph.edges.forEach(edge => drawEdge(edge));
+    graph.nodes.forEach(node => drawNode(node));
 
     stage.update();
 }

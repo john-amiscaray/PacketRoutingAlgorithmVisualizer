@@ -1,4 +1,5 @@
 import { addEdge, addNode, computeDijkstra, graph, removeNode, saveGraph } from './graph.js';
+import { redraw } from './canvas.js';
 
 let stage = new createjs.Stage('graphics-pane');
 
@@ -46,6 +47,7 @@ function editGraphSubmit() {
     }
 
     saveGraph();
+    redraw();
 
 }
 
