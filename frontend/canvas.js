@@ -23,8 +23,8 @@ function drawNode(node) {
 
     // Create a container for the circle and label
     const container = new createjs.Container();
-    container.x = (Math.random() * stage.canvas.width) - NODE_RADIUS;
-    container.y = (Math.random() * stage.canvas.height) - NODE_RADIUS;
+    container.x = node.x || (Math.random() * stage.canvas.width) - NODE_RADIUS;
+    container.y = node.y || (Math.random() * stage.canvas.height) - NODE_RADIUS;
     container.addChild(circle, label);
 
     node.x = container.x;
