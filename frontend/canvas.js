@@ -1,4 +1,4 @@
-import { graph } from "./graph.js";
+import { graph, saveGraph } from "./graph.js";
 import { stage } from "./main.js"
 
 // Constants for node, edge, and label styling
@@ -38,6 +38,27 @@ function drawNode(node) {
     container.x = node.x || randomPositionX();
     container.y = node.y || randomPositionY();
     container.addChild(circle, label);
+
+    container.on('mousedown', function(e){
+        var posX = e.stageX;
+        var posY = e.stageY;
+        this.offset = {x: this.x - posX, y: this.y - posY};
+    });
+
+    container.on('pressmove', function(e){
+        var posX = e.stageX;
+        var posY = e.stageY;
+        this.x = posX + this.offset.x;
+        this.y = posY + this.offset.y;
+        node.x = this.x;
+        node.y = this.y;
+        stage.update();
+    });
+
+    container.on('pressup', function(e){
+        saveGraph();
+        redraw();
+    });
 
     node.x = container.x;
     node.y = container.y;
