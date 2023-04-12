@@ -175,7 +175,9 @@ function dijkstraStart() {
             }while(container);
             graph.nodes.forEach((node) => drawNode(node));
             previouslyAddedEdges = previouslyAddedEdges.concat(values);
-            drawStates(states, previouslyAddedEdges);
+            sleep(1000).then(() => {
+                drawStates(states, previouslyAddedEdges);
+            });
 
         });
 
