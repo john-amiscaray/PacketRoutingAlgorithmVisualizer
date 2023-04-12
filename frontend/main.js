@@ -112,15 +112,15 @@ function dijkstraStart() {
 
     redraw();
 
-    function isUpdatedByAttachedEdge(cell, attachedEdges){
+    function isUpdatedByAttachedEdge(pathTableCell, attachedEdges){
 
         let result = false;
 
         for(let edge of attachedEdges){
 
-            if(cell.vertexLabel === edge.node1 && cell.previousVertexLabel === edge.node2){
+            if(pathTableCell.vertexLabel === edge.node1 && pathTableCell.previousVertexLabel === edge.node2){
                 return true;
-            }else if(cell.vertexLabel === edge.node2 && cell.previousVertexLabel === edge.node1){
+            }else if(pathTableCell.vertexLabel === edge.node2 && pathTableCell.previousVertexLabel === edge.node1){
                 return true;
             }
 
@@ -130,21 +130,30 @@ function dijkstraStart() {
 
     }
 
-    function drawStates(states){
+    function drawStates(states, previouslyAddedEdges=[]){
 
         if(states.length === 0){
             return;
         }
 
+        // Pops out the first element similar to a stack
         let state = states.shift();
         let activeAnimations = [];
         let container = nodeContainerMap.get(state.currentNode);
         createjs.Tween.get(container, {loop: true})
-            .to({alpha: 0.9}, 500)
-            .to({alpha: 1}, 500);
+            .to({ alpha: 0.9 }, 500)
+            .to({ alpha: 1 }, 500);
 
-        state.pathTable.forEach(async (cell) => {
+        state.pathTable.forEach((cell) => {
             if (cell.vertexLabel && cell.previousVertexLabel && isUpdatedByAttachedEdge(cell, state.attachedEdges)) {
+                // Remove previously added edge from path if we found a better one
+                previouslyAddedEdges.forEach(entry => {
+                    if(entry.line && (entry.node1 === cell.vertexLabel || entry.node2 === cell.vertexLabel)){
+                        createjs.Tween.get(entry.line)
+                            .to({ alpha: 0 }, 5000)
+                            .call(() => stage.removeChild(entry.line));
+                    }
+                });
                 activeAnimations.push(
                     drawConnectingEdge({
                         node1: cell.vertexLabel,
@@ -155,7 +164,7 @@ function dijkstraStart() {
             }
         });
 
-        Promise.all(activeAnimations).then(() => {
+        Promise.all(activeAnimations).then(values => {
 
             createjs.Tween.removeAllTweens();
             let containerIter = nodeContainerMap.values();
@@ -165,7 +174,8 @@ function dijkstraStart() {
                 container = containerIter.next().value;
             }while(container);
             graph.nodes.forEach((node) => drawNode(node));
-            drawStates(states);
+            previouslyAddedEdges = previouslyAddedEdges.concat(values);
+            drawStates(states, previouslyAddedEdges);
 
         });
 
@@ -173,48 +183,10 @@ function dijkstraStart() {
 
     computeDijkstra(start)
         .then((res) => res.json())
-        // res in the following line is the array of DijkstraState objects from the backend. TODO: use them for the animation
         .then((res) => {
-            /*
-
-            res.forEach((element) => {
-                element["pathTable"].forEach(async (elem) => {
-                    if (elem.vertexLabel && elem.previousVertexLabel) {
-                        await drawConnectingEdge({
-                            node1: elem.vertexLabel,
-                            node2: elem.previousVertexLabel,
-                            weight: elem.distance,
-                        });
-                    }
-                });
-
-                element["pathTable"].forEach((elem) => {
-                    if (elem.vertexLabel && elem.previousVertexLabel) {
-                        drawEdge({
-                            node1: elem.vertexLabel,
-                            node2: elem.previousVertexLabel,
-                            weight: elem.distance,
-                        });
-                    }
-                });
-            });
-
-            */
             drawStates(res);
-            // stage.removeAllChildren();
-            // console.log(res[res.length - 1]["pathTable"]);
-            // res[res.length - 1]["pathTable"].forEach((element) => {
-            //     if (element.vertexLabel && element.previousVertexLabel) {
-            //         drawConnectingEdge({
-            //             node1: element.vertexLabel,
-            //             node2: element.previousVertexLabel,
-            //             weight: element.distance,
-            //         });
-            //     }
-            //     graph.nodes.forEach((node) => drawNode(node));
-            // });
-            // stage.update();
         });
+
 }
 
 function bellmanFordStart() {
