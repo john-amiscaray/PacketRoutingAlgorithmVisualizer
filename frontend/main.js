@@ -9,7 +9,7 @@ import {
     clearGraph
 } from "./graph.js";
 
-import { drawEdge, redraw, drawConnectingEdge, drawNode } from "./canvas.js";
+import { drawEdge, redraw, drawConnectingEdge, drawNode, nodeContainerMap } from "./canvas.js";
 
 let stage = new createjs.Stage("graphics-pane");
 
@@ -138,6 +138,11 @@ function dijkstraStart() {
 
         let state = states.shift();
         let activeAnimations = [];
+        let container = nodeContainerMap.get(state.currentNode);
+        createjs.Tween.get(container, {loop: true})
+            .to({alpha: 0.9}, 500)
+            .to({alpha: 1}, 500);
+
         state.pathTable.forEach(async (cell) => {
             if (cell.vertexLabel && cell.previousVertexLabel && isUpdatedByAttachedEdge(cell, state.attachedEdges)) {
                 activeAnimations.push(
@@ -150,8 +155,16 @@ function dijkstraStart() {
             }
         });
 
-        Promise.all(activeAnimations).then(values => {
+        Promise.all(activeAnimations).then(() => {
 
+            createjs.Tween.removeAllTweens();
+            let containerIter = nodeContainerMap.values();
+            let container = containerIter.next().value;
+            do{
+                stage.removeChild(container);
+                container = containerIter.next().value;
+            }while(container);
+            graph.nodes.forEach((node) => drawNode(node));
             drawStates(states);
 
         });
@@ -217,6 +230,8 @@ function bellmanFordStart() {
         // res in the following line is the array of DijkstraState objects from the backend. TODO: use them for the animation
         .then((res) => console.log(res));
 }
+
+createjs.Ticker.setFPS(60);
 
 window.editGraphSubmit = editGraphSubmit;
 window.clearGraphClick = clearGraphClick;

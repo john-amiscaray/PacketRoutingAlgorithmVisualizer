@@ -12,6 +12,8 @@ const FINAL_EDGE_COLOR = "Green";
 stage.canvas.width = window.innerWidth * 0.85;
 stage.canvas.height = window.innerHeight * 0.85;
 
+const nodeContainerMap = new Map();
+
 function randomPositionX() {
     return Math.random() * (stage.canvas.width - NODE_RADIUS) + NODE_RADIUS;
 }
@@ -59,6 +61,7 @@ function drawNode(node) {
 
     node.x = container.x;
     node.y = container.y;
+    nodeContainerMap.set(node.label, container);
 
     stage.addChild(container);
     stage.update();
@@ -117,7 +120,7 @@ function drawConnectingEdge(edge) {
         let x = start.x;
         let y = start.y;
         let tempc;
-        graph.nodes.forEach((node) => drawNode(node));
+        //graph.nodes.forEach((node) => drawNode(node));
         function tick(event) {
             stage.removeChild(tempc);
             let line = new createjs.Shape();
@@ -141,7 +144,7 @@ function drawConnectingEdge(edge) {
             }
             if (Math.abs(x - end.x) < 1 && Math.abs(y - end.y) < 1) {
                 createjs.Ticker.off("tick", anim);
-                graph.nodes.forEach((node) => drawNode(node));
+                //graph.nodes.forEach((node) => drawNode(node));
                 stage.update();
                 resolve();
             }
@@ -168,4 +171,4 @@ function redraw() {
     stage.update();
 }
 
-export { drawNode, drawEdge, redraw, drawConnectingEdge };
+export { drawNode, drawEdge, redraw, drawConnectingEdge, nodeContainerMap };
