@@ -141,8 +141,10 @@ function dijkstraStart() {
         let activeAnimations = [];
         let container = nodeContainerMap.get(state.currentNode);
         createjs.Tween.get(container, {loop: true})
-            .to({ alpha: 0.9 }, 500)
-            .to({ alpha: 1 }, 500);
+            .to({ scale: 0.7 }, 500)
+            .to({ scale: 1 }, 500);
+
+        stage.setChildIndex(container, stage.children.length - 1);
 
         state.pathTable.forEach((cell) => {
             if (cell.vertexLabel && cell.previousVertexLabel && isUpdatedByAttachedEdge(cell, state.attachedEdges)) {
@@ -156,8 +158,8 @@ function dijkstraStart() {
                 });
                 activeAnimations.push(
                     drawConnectingEdge({
-                        node1: cell.vertexLabel,
-                        node2: cell.previousVertexLabel,
+                        node1: cell.previousVertexLabel,
+                        node2: cell.vertexLabel,
                         weight: cell.distance,
                     })
                 );

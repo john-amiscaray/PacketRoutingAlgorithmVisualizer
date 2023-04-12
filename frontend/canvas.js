@@ -150,8 +150,9 @@ function drawConnectingEdge(edge) {
             let container = new createjs.Container();
             // container.addChild(line, weight);
             container.addChild(line);
-    
+            container.alpha = 0.8;
             stage.addChild(container);
+            stage.setChildIndex(container, stage.children.length - 2);
     
             stage.update(event); // important!!
             tempc = container;
