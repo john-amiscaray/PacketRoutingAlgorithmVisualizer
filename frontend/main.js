@@ -6,6 +6,7 @@ import {
     removeNode,
     saveGraph,
     removeEdge,
+    clearGraph
 } from "./graph.js";
 
 import { drawEdge, redraw, drawConnectingEdge, drawNode } from "./canvas.js";
@@ -89,6 +90,14 @@ function editGraphSubmit(action) {
     redraw();
 }
 
+function clearGraphClick() {
+
+    if(confirm("Are you sure you want to clear this graph?")){
+        clearGraph();
+    }
+
+}
+
 function sleep(time) {
     return new Promise((resolve) => setTimeout(resolve, time));
 }
@@ -103,14 +112,47 @@ function dijkstraStart() {
 
     redraw();
 
+    function drawStates(states){
+
+        if(states.length === 0){
+            return;
+        }
+
+        let state = states.shift();
+        let activeAnimations = [];
+        state['pathTable'].forEach(async (cell) => {
+            if (cell.vertexLabel && cell.previousVertexLabel) {
+                activeAnimations.push(
+                    drawConnectingEdge({
+                        node1: cell.vertexLabel,
+                        node2: cell.previousVertexLabel,
+                        weight: cell.distance,
+                    })
+                );
+            }
+        });
+
+        Promise.all(activeAnimations).then(values => {
+
+            for(let value of values){
+                console.log(value);
+            }
+            drawStates(states);
+
+        });
+
+    }
+
     computeDijkstra(start)
         .then((res) => res.json())
         // res in the following line is the array of DijkstraState objects from the backend. TODO: use them for the animation
         .then((res) => {
+            /*
+
             res.forEach((element) => {
-                /*element["pathTable"].forEach((elem) => {
+                element["pathTable"].forEach(async (elem) => {
                     if (elem.vertexLabel && elem.previousVertexLabel) {
-                        /*drawConnectingEdge({
+                        await drawConnectingEdge({
                             node1: elem.vertexLabel,
                             node2: elem.previousVertexLabel,
                             weight: elem.distance,
@@ -126,22 +168,24 @@ function dijkstraStart() {
                             weight: elem.distance,
                         });
                     }
-                });*/
+                });
             });
 
-            stage.removeAllChildren();
-            console.log(res[res.length - 1]["pathTable"]);
-            res[res.length - 1]["pathTable"].forEach((element) => {
-                if (element.vertexLabel && element.previousVertexLabel) {
-                    drawConnectingEdge({
-                        node1: element.vertexLabel,
-                        node2: element.previousVertexLabel,
-                        weight: element.distance,
-                    });
-                }
-                graph.nodes.forEach((node) => drawNode(node));
-            });
-            stage.update();
+            */
+            drawStates(res);
+            // stage.removeAllChildren();
+            // console.log(res[res.length - 1]["pathTable"]);
+            // res[res.length - 1]["pathTable"].forEach((element) => {
+            //     if (element.vertexLabel && element.previousVertexLabel) {
+            //         drawConnectingEdge({
+            //             node1: element.vertexLabel,
+            //             node2: element.previousVertexLabel,
+            //             weight: element.distance,
+            //         });
+            //     }
+            //     graph.nodes.forEach((node) => drawNode(node));
+            // });
+            // stage.update();
         });
 }
 
@@ -160,6 +204,7 @@ function bellmanFordStart() {
 }
 
 window.editGraphSubmit = editGraphSubmit;
+window.clearGraphClick = clearGraphClick;
 window.dijkstraStart = dijkstraStart;
 window.bellmanFordStart = bellmanFordStart;
 

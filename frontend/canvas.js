@@ -111,46 +111,52 @@ function drawConnectingEdge(edge) {
     weight.textBaseline = "middle";
     weight.x = (start.x + end.x) / 2;
     weight.y = (start.y + end.y) / 2;
-    var anim = createjs.Ticker.on("tick", tick);
-    let x = start.x;
-    let y = start.y;
-    let tempc;
-    graph.nodes.forEach((node) => drawNode(node));
-    function tick(event) {
-        stage.removeChild(tempc);
-        let line = new createjs.Shape();
-        line.graphics
-            .setStrokeStyle(edge.weight)
-            .beginStroke(FINAL_EDGE_COLOR)
-            .moveTo(start.x, start.y)
-            .lineTo(x, y);
+    return new Promise((resolve, reject) => {
 
-        if (x < end.x) {
-            x = x + 1;
+        var anim = createjs.Ticker.on("tick", tick);
+        let x = start.x;
+        let y = start.y;
+        let tempc;
+        graph.nodes.forEach((node) => drawNode(node));
+        function tick(event) {
+            stage.removeChild(tempc);
+            let line = new createjs.Shape();
+            line.graphics
+                .setStrokeStyle(edge.weight)
+                .beginStroke(FINAL_EDGE_COLOR)
+                .moveTo(start.x, start.y)
+                .lineTo(x, y);
+    
+            if (x < end.x) {
+                x = x + 1;
+            }
+            if (x > end.x) {
+                x = x - 1;
+            }
+            if (y < end.y) {
+                y = y + 1;
+            }
+            if (y > end.y) {
+                y = y - 1;
+            }
+            if (Math.abs(x - end.x) < 1 && Math.abs(y - end.y) < 1) {
+                createjs.Ticker.off("tick", anim);
+                graph.nodes.forEach((node) => drawNode(node));
+                stage.update();
+                resolve("HI");
+            }
+            let container = new createjs.Container();
+            container.addChild(line, weight);
+    
+            stage.addChild(container);
+    
+            stage.update(event); // important!!
+            tempc = container;
         }
-        if (x > end.x) {
-            x = x - 1;
-        }
-        if (y < end.y) {
-            y = y + 1;
-        }
-        if (y > end.y) {
-            y = y - 1;
-        }
-        if (Math.abs(x - end.x) < 1 && Math.abs(y - end.y) < 1) {
-            createjs.Ticker.off("tick", anim);
-            graph.nodes.forEach((node) => drawNode(node));
-            stage.update();
-        }
-        let container = new createjs.Container();
-        container.addChild(line, weight);
+        stage.update();
 
-        stage.addChild(container);
+    });
 
-        stage.update(event); // important!!
-        tempc = container;
-    }
-    stage.update();
 }
 // Function to redraw the graph on the canvas
 function redraw() {
