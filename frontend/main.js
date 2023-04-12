@@ -112,6 +112,24 @@ function dijkstraStart() {
 
     redraw();
 
+    function isUpdatedByAttachedEdge(cell, attachedEdges){
+
+        let result = false;
+
+        for(let edge of attachedEdges){
+
+            if(cell.vertexLabel === edge.node1 && cell.previousVertexLabel === edge.node2){
+                return true;
+            }else if(cell.vertexLabel === edge.node2 && cell.previousVertexLabel === edge.node1){
+                return true;
+            }
+
+        }
+
+        return result;
+
+    }
+
     function drawStates(states){
 
         if(states.length === 0){
@@ -120,8 +138,8 @@ function dijkstraStart() {
 
         let state = states.shift();
         let activeAnimations = [];
-        state['pathTable'].forEach(async (cell) => {
-            if (cell.vertexLabel && cell.previousVertexLabel) {
+        state.pathTable.forEach(async (cell) => {
+            if (cell.vertexLabel && cell.previousVertexLabel && isUpdatedByAttachedEdge(cell, state.attachedEdges)) {
                 activeAnimations.push(
                     drawConnectingEdge({
                         node1: cell.vertexLabel,
@@ -134,9 +152,6 @@ function dijkstraStart() {
 
         Promise.all(activeAnimations).then(values => {
 
-            for(let value of values){
-                console.log(value);
-            }
             drawStates(states);
 
         });

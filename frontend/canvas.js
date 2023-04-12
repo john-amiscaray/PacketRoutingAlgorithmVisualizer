@@ -143,7 +143,7 @@ function drawConnectingEdge(edge) {
                 createjs.Ticker.off("tick", anim);
                 graph.nodes.forEach((node) => drawNode(node));
                 stage.update();
-                resolve("HI");
+                resolve();
             }
             let container = new createjs.Container();
             container.addChild(line, weight);
