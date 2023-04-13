@@ -15,6 +15,7 @@ import {
     drawConnectingEdge,
     drawNode,
     nodeContainerMap,
+    drawText,
 } from "./canvas.js";
 
 let stage = new createjs.Stage("graphics-pane");
@@ -136,11 +137,10 @@ function dijkstraStart() {
         return result;
     }
 
-    function drawStates(states, previouslyAddedEdges = []) {
+    function drawStates(states, previouslyAddedEdges = [], textContainer = []) {
         if (states.length === 0) {
             return;
         }
-
         // Pops out the first element similar to a stack
         let state = states.shift();
         let activeAnimations = [];
@@ -179,8 +179,35 @@ function dijkstraStart() {
             }
         });
 
+        let yValMultiplier = 1;
+        let xPos = stage.canvas.width - 150;
+        let tempTextContainer = [];
         Promise.all(activeAnimations).then((values) => {
             createjs.Tween.removeAllTweens();
+            tempTextContainer.push(
+                drawText(
+                    "Vertex Label - Distance - Previous Vertex Label",
+                    xPos,
+                    10 * yValMultiplier
+                )
+            );
+            yValMultiplier++;
+            if (state) {
+                state.pathTable.forEach((elem) => {
+                    tempTextContainer.push(
+                        drawText(
+                            elem.vertexLabel +
+                                " " +
+                                elem.distance +
+                                " " +
+                                elem.previousVertexLabel,
+                            xPos,
+                            10 * yValMultiplier
+                        )
+                    );
+                    yValMultiplier++;
+                });
+            }
             let containerIter = nodeContainerMap.values();
             let container = containerIter.next().value;
             do {
@@ -190,7 +217,13 @@ function dijkstraStart() {
             graph.nodes.forEach((node) => drawNode(node));
             previouslyAddedEdges = previouslyAddedEdges.concat(values);
             sleep(1000).then(() => {
-                drawStates(states, previouslyAddedEdges);
+                let textIter = textContainer.values();
+                let textCont = textIter.next().value;
+                do {
+                    stage.removeChild(textCont);
+                    textCont = textIter.next().value;
+                } while (textCont);
+                drawStates(states, previouslyAddedEdges, tempTextContainer);
             });
         });
     }

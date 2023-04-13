@@ -99,6 +99,20 @@ function drawEdge(edge) {
     stage.update();
 }
 
+function drawText(text, x, y) {
+    const tempText = new createjs.Text(text, "bold 12px Arial", "Black");
+    tempText.textAlign = "center";
+    tempText.textBaseline = "middle";
+
+    tempText.x = x;
+    tempText.y = y;
+    const container = new createjs.Container();
+    container.addChild(tempText);
+    stage.addChild(container);
+    stage.update();
+    return container;
+}
+
 function drawConnectingEdge(edge) {
     // Get the starting and ending nodes
     const start = graph.nodes.find((node) => node.label === edge.node1);
@@ -169,4 +183,11 @@ function redraw() {
     stage.update();
 }
 
-export { drawNode, drawEdge, redraw, drawConnectingEdge, nodeContainerMap };
+export {
+    drawNode,
+    drawEdge,
+    redraw,
+    drawConnectingEdge,
+    nodeContainerMap,
+    drawText,
+};
