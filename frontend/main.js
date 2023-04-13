@@ -165,7 +165,7 @@ function dijkstraStart() {
                             entry.node2 === cell.vertexLabel)
                     ) {
                         createjs.Tween.get(entry.line)
-                            .to({ alpha: 0 }, 5000)
+                            .to({ alpha: -100 }, 5000)
                             .call(() => stage.removeChild(entry.line));
                     }
                 });
@@ -216,7 +216,7 @@ function bellmanFordStart() {
         .then((res) => console.log(res));
 }
 
-createjs.Ticker.setFPS(60);
+createjs.Ticker.setFPS(120);
 
 window.editGraphSubmit = editGraphSubmit;
 window.clearGraphClick = clearGraphClick;
