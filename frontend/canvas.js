@@ -4,10 +4,10 @@ import { stage } from "./main.js";
 // Constants for node, edge, and label styling
 const NODE_RADIUS = 45;
 const NODE_COLOR = "DeepSkyBlue";
-const EDGE_COLOR = "Red";
+const EDGE_COLOR = "Green";
 const LABEL_COLOR = "White";
 const WEIGHT_COLOR = "Black";
-const FINAL_EDGE_COLOR = "Green";
+const FINAL_EDGE_COLOR = "Red";
 
 stage.canvas.width = window.innerWidth * 0.85;
 stage.canvas.height = window.innerHeight * 0.85;
@@ -115,7 +115,6 @@ function drawConnectingEdge(edge) {
     // weight.x = (start.x + end.x) / 2;
     // weight.y = (start.y + end.y) / 2;
     return new Promise((resolve, reject) => {
-
         var anim = createjs.Ticker.on("tick", tick);
         let x = start.x;
         let y = start.y;
@@ -129,7 +128,7 @@ function drawConnectingEdge(edge) {
                 .beginStroke(FINAL_EDGE_COLOR)
                 .moveTo(start.x, start.y)
                 .lineTo(x, y);
-    
+
             if (x < end.x) {
                 x = x + 1;
             }
@@ -153,14 +152,12 @@ function drawConnectingEdge(edge) {
             container.alpha = 0.8;
             stage.addChild(container);
             stage.setChildIndex(container, stage.children.length - 2);
-    
+
             stage.update(event); // important!!
             tempc = container;
         }
         stage.update();
-
     });
-
 }
 // Function to redraw the graph on the canvas
 function redraw() {

@@ -6,10 +6,16 @@ import {
     removeNode,
     saveGraph,
     removeEdge,
-    clearGraph
+    clearGraph,
 } from "./graph.js";
 
-import { drawEdge, redraw, drawConnectingEdge, drawNode, nodeContainerMap } from "./canvas.js";
+import {
+    drawEdge,
+    redraw,
+    drawConnectingEdge,
+    drawNode,
+    nodeContainerMap,
+} from "./canvas.js";
 
 let stage = new createjs.Stage("graphics-pane");
 
@@ -91,11 +97,9 @@ function editGraphSubmit(action) {
 }
 
 function clearGraphClick() {
-
-    if(confirm("Are you sure you want to clear this graph?")){
+    if (confirm("Are you sure you want to clear this graph?")) {
         clearGraph();
     }
-
 }
 
 function sleep(time) {
@@ -112,27 +116,28 @@ function dijkstraStart() {
 
     redraw();
 
-    function isUpdatedByAttachedEdge(pathTableCell, attachedEdges){
-
+    function isUpdatedByAttachedEdge(pathTableCell, attachedEdges) {
         let result = false;
 
-        for(let edge of attachedEdges){
-
-            if(pathTableCell.vertexLabel === edge.node1 && pathTableCell.previousVertexLabel === edge.node2){
+        for (let edge of attachedEdges) {
+            if (
+                pathTableCell.vertexLabel === edge.node1 &&
+                pathTableCell.previousVertexLabel === edge.node2
+            ) {
                 return true;
-            }else if(pathTableCell.vertexLabel === edge.node2 && pathTableCell.previousVertexLabel === edge.node1){
+            } else if (
+                pathTableCell.vertexLabel === edge.node2 &&
+                pathTableCell.previousVertexLabel === edge.node1
+            ) {
                 return true;
             }
-
         }
 
         return result;
-
     }
 
-    function drawStates(states, previouslyAddedEdges=[]){
-
-        if(states.length === 0){
+    function drawStates(states, previouslyAddedEdges = []) {
+        if (states.length === 0) {
             return;
         }
 
@@ -140,17 +145,25 @@ function dijkstraStart() {
         let state = states.shift();
         let activeAnimations = [];
         let container = nodeContainerMap.get(state.currentNode);
-        createjs.Tween.get(container, {loop: true})
+        createjs.Tween.get(container, { loop: true })
             .to({ scale: 0.7 }, 500)
             .to({ scale: 1 }, 500);
 
         stage.setChildIndex(container, stage.children.length - 1);
 
         state.pathTable.forEach((cell) => {
-            if (cell.vertexLabel && cell.previousVertexLabel && isUpdatedByAttachedEdge(cell, state.attachedEdges)) {
+            if (
+                cell.vertexLabel &&
+                cell.previousVertexLabel &&
+                isUpdatedByAttachedEdge(cell, state.attachedEdges)
+            ) {
                 // Remove previously added edge from path if we found a better one
-                previouslyAddedEdges.forEach(entry => {
-                    if(entry.line && (entry.node1 === cell.vertexLabel || entry.node2 === cell.vertexLabel)){
+                previouslyAddedEdges.forEach((entry) => {
+                    if (
+                        entry.line &&
+                        (entry.node1 === cell.vertexLabel ||
+                            entry.node2 === cell.vertexLabel)
+                    ) {
                         createjs.Tween.get(entry.line)
                             .to({ alpha: 0 }, 5000)
                             .call(() => stage.removeChild(entry.line));
@@ -166,23 +179,20 @@ function dijkstraStart() {
             }
         });
 
-        Promise.all(activeAnimations).then(values => {
-
+        Promise.all(activeAnimations).then((values) => {
             createjs.Tween.removeAllTweens();
             let containerIter = nodeContainerMap.values();
             let container = containerIter.next().value;
-            do{
+            do {
                 stage.removeChild(container);
                 container = containerIter.next().value;
-            }while(container);
+            } while (container);
             graph.nodes.forEach((node) => drawNode(node));
             previouslyAddedEdges = previouslyAddedEdges.concat(values);
             sleep(1000).then(() => {
                 drawStates(states, previouslyAddedEdges);
             });
-
         });
-
     }
 
     computeDijkstra(start)
@@ -190,7 +200,6 @@ function dijkstraStart() {
         .then((res) => {
             drawStates(res);
         });
-
 }
 
 function bellmanFordStart() {
