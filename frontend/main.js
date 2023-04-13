@@ -137,7 +137,7 @@ function dijkstraStart() {
         return result;
     }
 
-    function drawStates(states, previouslyAddedEdges = [], textContainer = []) {
+    function drawDijkstraStates(states, previouslyAddedEdges = [], textContainer = []) {
 
         const JAVA_MAX_INT = 2147483647;
 
@@ -220,7 +220,7 @@ function dijkstraStart() {
                         yValMultiplier++;
                    });
                 } 
-                drawStates(states, previouslyAddedEdges, tempTextContainer);
+                drawDijkstraStates(states, previouslyAddedEdges, tempTextContainer);
             });
         });
     }
@@ -228,7 +228,7 @@ function dijkstraStart() {
     computeDijkstra(start)
         .then((res) => res.json())
         .then((res) => {
-            drawStates(res);
+            drawDijkstraStates(res);
         });
 }
 
