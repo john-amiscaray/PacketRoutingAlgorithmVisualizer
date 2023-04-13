@@ -193,12 +193,9 @@ function dijkstraStart() {
             graph.nodes.forEach((node) => drawNode(node));
             previouslyAddedEdges = previouslyAddedEdges.concat(values);
             sleep(1000).then(() => {
-                let textIter = textContainer.values();
-                let textCont = textIter.next().value;
-                do {
-                    stage.removeChild(textCont);
-                    textCont = textIter.next().value;
-                } while (textCont);
+                textContainer.forEach(container => {
+                    stage.removeChild(container);
+                });
                 tempTextContainer.push(
                     drawText(
                         "Vertex Label ----    Distance ---- Previous Vertex Label",
