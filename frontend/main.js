@@ -138,6 +138,9 @@ function dijkstraStart() {
     }
 
     function drawStates(states, previouslyAddedEdges = [], textContainer = []) {
+
+        const JAVA_MAX_INT = 2147483647;
+
         if (states.length === 0) {
             return;
         }
@@ -206,10 +209,11 @@ function dijkstraStart() {
                 yValMultiplier++;
                 if (state) {
                     state.pathTable.forEach((elem) => {
+                        let distance = elem.distance !== JAVA_MAX_INT ? elem.distance : "∞";
                         tempTextContainer.push(
                             drawText(
                                 elem.vertexLabel.padStart(12, " ") +
-                                    elem.distance.toString().padStart(27, " ") +
+                                    distance.toString().padStart(27, " ") +
                                     "".padEnd(20, " ") +
                                     elem.previousVertexLabel,
                                 xPos,
