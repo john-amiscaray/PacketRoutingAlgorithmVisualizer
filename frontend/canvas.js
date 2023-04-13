@@ -117,17 +117,8 @@ function drawConnectingEdge(edge) {
     // Get the starting and ending nodes
     const start = graph.nodes.find((node) => node.label === edge.node1);
     const end = graph.nodes.find((node) => node.label === edge.node2);
+    const dist = 1.75;
 
-    // Display the weight of the edge
-    // const weight = new createjs.Text(
-    //     edge.weight.toString(),
-    //     "bold 25px Arial",
-    //     WEIGHT_COLOR
-    // );
-    // weight.textAlign = "center";
-    // weight.textBaseline = "middle";
-    // weight.x = (start.x + end.x) / 2;
-    // weight.y = (start.y + end.y) / 2;
     return new Promise((resolve, reject) => {
         var anim = createjs.Ticker.on("tick", tick);
         let x = start.x;
@@ -144,18 +135,18 @@ function drawConnectingEdge(edge) {
                 .lineTo(x, y);
 
             if (x < end.x) {
-                x = x + 1;
+                x += dist;
             }
             if (x > end.x) {
-                x = x - 1;
+                x -= dist;
             }
             if (y < end.y) {
-                y = y + 1;
+                y += dist;
             }
             if (y > end.y) {
-                y = y - 1;
+                y -= dist;
             }
-            if (Math.abs(x - end.x) < 1 && Math.abs(y - end.y) < 1) {
+            if (Math.abs(x - end.x) < dist && Math.abs(y - end.y) < dist) {
                 createjs.Ticker.off("tick", anim);
                 stage.update();
                 resolve({ line, node1: edge.node1, node2: edge.node2 });

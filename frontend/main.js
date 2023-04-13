@@ -245,7 +245,7 @@ function bellmanFordStart() {
         .then((res) => console.log(res));
 }
 
-createjs.Ticker.setFPS(120);
+createjs.Ticker.setFPS(60);
 
 window.editGraphSubmit = editGraphSubmit;
 window.clearGraphClick = clearGraphClick;
