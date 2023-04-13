@@ -180,13 +180,13 @@ function dijkstraStart() {
         });
 
         let yValMultiplier = 1;
-        let xPos = stage.canvas.width - 150;
+        let xPos = stage.canvas.width - 350;
         let tempTextContainer = [];
         Promise.all(activeAnimations).then((values) => {
             createjs.Tween.removeAllTweens();
             tempTextContainer.push(
                 drawText(
-                    "Vertex Label - Distance - Previous Vertex Label",
+                    "Vertex Label ----    Distance ---- Previous Vertex Label",
                     xPos,
                     10 * yValMultiplier
                 )
@@ -196,13 +196,12 @@ function dijkstraStart() {
                 state.pathTable.forEach((elem) => {
                     tempTextContainer.push(
                         drawText(
-                            elem.vertexLabel +
-                                " " +
-                                elem.distance +
-                                " " +
+                            elem.vertexLabel.padStart(12, " ") +
+                                elem.distance.toString().padStart(27, " ") +
+                                "".padEnd(20, " ") +
                                 elem.previousVertexLabel,
                             xPos,
-                            10 * yValMultiplier
+                            14 * yValMultiplier
                         )
                     );
                     yValMultiplier++;

@@ -100,8 +100,8 @@ function drawEdge(edge) {
 }
 
 function drawText(text, x, y) {
-    const tempText = new createjs.Text(text, "bold 12px Arial", "Black");
-    tempText.textAlign = "center";
+    const tempText = new createjs.Text(text, "bold 14px Arial", "Black");
+    tempText.textAlign = "left";
     tempText.textBaseline = "middle";
 
     tempText.x = x;
