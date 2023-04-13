@@ -180,7 +180,7 @@ function dijkstraStart() {
         });
 
         let yValMultiplier = 1;
-        let xPos = stage.canvas.width - 350;
+        let xPos = stage.canvas.width - 375;
         let tempTextContainer = [];
         Promise.all(activeAnimations).then((values) => {
             createjs.Tween.removeAllTweens();
