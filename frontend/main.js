@@ -165,7 +165,7 @@ function dijkstraStart() {
                             entry.node2 === cell.vertexLabel)
                     ) {
                         createjs.Tween.get(entry.line)
-                            .to({ alpha: -100 }, 5000)
+                            .to({ alpha: 0 }, 5000)
                             .call(() => stage.removeChild(entry.line));
                     }
                 });
@@ -184,29 +184,6 @@ function dijkstraStart() {
         let tempTextContainer = [];
         Promise.all(activeAnimations).then((values) => {
             createjs.Tween.removeAllTweens();
-            tempTextContainer.push(
-                drawText(
-                    "Vertex Label ----    Distance ---- Previous Vertex Label",
-                    xPos,
-                    10 * yValMultiplier
-                )
-            );
-            yValMultiplier++;
-            if (state) {
-                state.pathTable.forEach((elem) => {
-                    tempTextContainer.push(
-                        drawText(
-                            elem.vertexLabel.padStart(12, " ") +
-                                elem.distance.toString().padStart(27, " ") +
-                                "".padEnd(20, " ") +
-                                elem.previousVertexLabel,
-                            xPos,
-                            14 * yValMultiplier
-                        )
-                    );
-                    yValMultiplier++;
-                });
-            }
             let containerIter = nodeContainerMap.values();
             let container = containerIter.next().value;
             do {
@@ -222,6 +199,29 @@ function dijkstraStart() {
                     stage.removeChild(textCont);
                     textCont = textIter.next().value;
                 } while (textCont);
+                tempTextContainer.push(
+                    drawText(
+                        "Vertex Label ----    Distance ---- Previous Vertex Label",
+                        xPos,
+                        10 * yValMultiplier
+                    )
+                );
+                yValMultiplier++;
+                if (state) {
+                    state.pathTable.forEach((elem) => {
+                        tempTextContainer.push(
+                            drawText(
+                                elem.vertexLabel.padStart(12, " ") +
+                                    elem.distance.toString().padStart(27, " ") +
+                                    "".padEnd(20, " ") +
+                                    elem.previousVertexLabel,
+                                xPos,
+                                14 * yValMultiplier
+                            )
+                        );
+                        yValMultiplier++;
+                   });
+                } 
                 drawStates(states, previouslyAddedEdges, tempTextContainer);
             });
         });
