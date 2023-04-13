@@ -212,10 +212,7 @@ function dijkstraStart() {
                         let distance = elem.distance !== JAVA_MAX_INT ? elem.distance : "∞";
                         tempTextContainer.push(
                             drawText(
-                                elem.vertexLabel.padStart(12, " ") +
-                                    distance.toString().padStart(27, " ") +
-                                    "".padEnd(20, " ") +
-                                    elem.previousVertexLabel,
+                                `${elem.vertexLabel.padStart(12, " ").padEnd(35, " ")}${distance}${(elem.previousVertexLabel ?? "NULL").padStart(30, " ")}`,
                                 xPos,
                                 14 * yValMultiplier
                             )
