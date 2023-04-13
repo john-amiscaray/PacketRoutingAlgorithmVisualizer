@@ -97,7 +97,9 @@ function removeEdge(node1, node2, weight) {
 }
 
 function saveGraph() {
+
     localStorage.setItem("graph", JSON.stringify(graph));
+
 }
 
 function clearGraph() {
@@ -107,6 +109,7 @@ function clearGraph() {
 }
 
 async function computeDijkstra(start) {
+
     return await fetch("http://localhost:8080/graph/dijkstra", {
         method: "POST",
         headers: {

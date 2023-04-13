@@ -1,6 +1,22 @@
-import { addEdge, addNode, computeDijkstra, graph, removeNode, saveGraph, removeEdge, clearGraph } from './graph.js';
+import {
+    addEdge,
+    addNode,
+    computeDijkstra,
+    graph,
+    removeNode,
+    saveGraph,
+    removeEdge,
+    clearGraph,
+} from "./graph.js";
 
-import { redraw } from './canvas.js';
+import {
+    drawEdge,
+    redraw,
+    drawConnectingEdge,
+    drawNode,
+    nodeContainerMap,
+    drawText,
+} from "./canvas.js";
 
 let stage = new createjs.Stage("graphics-pane");
 
@@ -79,15 +95,16 @@ function editGraphSubmit(action) {
 
     saveGraph();
     redraw();
-
 }
 
 function clearGraphClick() {
-
-    if(confirm("Are you sure you want to clear this graph?")){
+    if (confirm("Are you sure you want to clear this graph?")) {
         clearGraph();
     }
+}
 
+function sleep(time) {
+    return new Promise((resolve) => setTimeout(resolve, time));
 }
 
 function dijkstraStart() {
@@ -98,10 +115,121 @@ function dijkstraStart() {
         return;
     }
 
+    redraw();
+
+    function isUpdatedByAttachedEdge(pathTableCell, attachedEdges) {
+        let result = false;
+
+        for (let edge of attachedEdges) {
+            if (
+                pathTableCell.vertexLabel === edge.node1 &&
+                pathTableCell.previousVertexLabel === edge.node2
+            ) {
+                return true;
+            } else if (
+                pathTableCell.vertexLabel === edge.node2 &&
+                pathTableCell.previousVertexLabel === edge.node1
+            ) {
+                return true;
+            }
+        }
+
+        return result;
+    }
+
+    function drawDijkstraStates(states, previouslyAddedEdges = [], textContainer = []) {
+
+        const JAVA_MAX_INT = 2147483647;
+
+        if (states.length === 0) {
+            return;
+        }
+        // Pops out the first element similar to a stack
+        let state = states.shift();
+        let activeAnimations = [];
+        let container = nodeContainerMap.get(state.currentNode);
+        createjs.Tween.get(container, { loop: true })
+            .to({ scale: 0.7 }, 500)
+            .to({ scale: 1 }, 500);
+
+        stage.setChildIndex(container, stage.children.length - 1);
+
+        state.pathTable.forEach((cell) => {
+            if (
+                cell.vertexLabel &&
+                cell.previousVertexLabel &&
+                isUpdatedByAttachedEdge(cell, state.attachedEdges)
+            ) {
+                // Remove previously added edge from path if we found a better one
+                previouslyAddedEdges.forEach((entry) => {
+                    if (
+                        entry.line &&
+                        (entry.node1 === cell.vertexLabel ||
+                            entry.node2 === cell.vertexLabel)
+                    ) {
+                        createjs.Tween.get(entry.line)
+                            .to({ alpha: 0 }, 5000)
+                            .call(() => stage.removeChild(entry.line));
+                    }
+                });
+                activeAnimations.push(
+                    drawConnectingEdge({
+                        node1: cell.previousVertexLabel,
+                        node2: cell.vertexLabel,
+                        weight: cell.distance,
+                    })
+                );
+            }
+        });
+
+        let yValMultiplier = 1;
+        let xPos = stage.canvas.width - 375;
+        let tempTextContainer = [];
+        Promise.all(activeAnimations).then((values) => {
+            createjs.Tween.removeAllTweens();
+            let containerIter = nodeContainerMap.values();
+            let container = containerIter.next().value;
+            do {
+                stage.removeChild(container);
+                container = containerIter.next().value;
+            } while (container);
+            graph.nodes.forEach((node) => drawNode(node));
+            previouslyAddedEdges = previouslyAddedEdges.concat(values);
+            sleep(1000).then(() => {
+                textContainer.forEach(container => {
+                    stage.removeChild(container);
+                });
+                tempTextContainer.push(
+                    drawText(
+                        "Vertex Label ----    Distance ---- Previous Vertex Label",
+                        xPos,
+                        10 * yValMultiplier
+                    )
+                );
+                yValMultiplier++;
+                if (state) {
+                    state.pathTable.forEach((elem) => {
+                        let distance = elem.distance !== JAVA_MAX_INT ? elem.distance : "∞";
+                        tempTextContainer.push(
+                            drawText(
+                                `${elem.vertexLabel.padStart(12, " ").padEnd(35, " ")}${distance}${(elem.previousVertexLabel ?? "NULL").padStart(30, " ")}`,
+                                xPos,
+                                14 * yValMultiplier
+                            )
+                        );
+                        yValMultiplier++;
+                   });
+                } 
+                drawDijkstraStates(states, previouslyAddedEdges, tempTextContainer);
+            });
+        });
+    }
+
     computeDijkstra(start)
         .then((res) => res.json())
-        // res in the following line is the array of DijkstraState objects from the backend. TODO: use them for the animation
-        .then((res) => console.log(res));
+        .then((res) => {
+            drawDijkstraStates(res);
+        });
 }
 
 function bellmanFordStart() {
@@ -118,10 +246,11 @@ function bellmanFordStart() {
         .then((res) => console.log(res));
 }
 
+createjs.Ticker.setFPS(60);
+
 window.editGraphSubmit = editGraphSubmit;
 window.clearGraphClick = clearGraphClick;
 window.dijkstraStart = dijkstraStart;
 window.bellmanFordStart = bellmanFordStart;
 
 export { stage };
-
