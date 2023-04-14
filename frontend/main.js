@@ -17,6 +17,7 @@ import {
     drawNode,
     nodeContainerMap,
     drawText,
+    redrawNodes,
 } from "./canvas.js";
 
 let stage = new createjs.Stage("graphics-pane");
@@ -191,13 +192,7 @@ function dijkstraStart() {
         let tempTextContainer = [];
         Promise.all(activeAnimations).then((values) => {
             createjs.Tween.removeAllTweens();
-            let containerIter = nodeContainerMap.values();
-            let container = containerIter.next().value;
-            do {
-                stage.removeChild(container);
-                container = containerIter.next().value;
-            } while (container);
-            graph.nodes.forEach((node) => drawNode(node));
+            redrawNodes();
             previouslyAddedEdges = previouslyAddedEdges.concat(values);
             sleep(1000).then(() => {
                 textContainer.forEach((container) => {
@@ -290,13 +285,7 @@ function bellmanFordStart() {
             drawConnectingEdge(edge)
                 .then(info => {
                     previousUpdatesInfo.push({ drawingInfo: info, update });
-                    let containerIter = nodeContainerMap.values();
-                    let container = containerIter.next().value;
-                    do {
-                        stage.removeChild(container);
-                        container = containerIter.next().value;
-                    } while (container);
-                    graph.nodes.forEach((node) => drawNode(node));
+                    redrawNodes();
                     drawConnectingEdgesFromUpdates(updates, previousUpdatesInfo).then(updatesInfo => resolve(updatesInfo));
                 });
 
@@ -306,7 +295,6 @@ function bellmanFordStart() {
 
     function drawBellmanFordStates(states, updatesInfo = []){
 
-        console.log(updatesInfo);
         if(states.length === 0){
             return;
         }
@@ -314,7 +302,7 @@ function bellmanFordStart() {
         let state = states.shift();
 
         drawConnectingEdgesFromUpdates(state.updates).then(updatesInfo => {
-            drawBellmanFordStates(states, updatesInfo);
+            sleep(1000).then(() => drawBellmanFordStates(states, updatesInfo));
         });
 
     }

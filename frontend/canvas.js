@@ -174,6 +174,18 @@ function redraw() {
     stage.update();
 }
 
+function redrawNodes() {
+
+    let containerIter = nodeContainerMap.values();
+    let container = containerIter.next().value;
+    do {
+        stage.removeChild(container);
+        container = containerIter.next().value;
+    } while (container);
+    graph.nodes.forEach((node) => drawNode(node));
+
+}
+
 export {
     drawNode,
     drawEdge,
@@ -181,4 +193,5 @@ export {
     drawConnectingEdge,
     nodeContainerMap,
     drawText,
+    redrawNodes
 };
