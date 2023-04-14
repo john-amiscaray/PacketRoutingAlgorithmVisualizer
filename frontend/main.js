@@ -173,7 +173,7 @@ function dijkstraStart() {
                         (entry.node1 === cell.vertexLabel ||
                             entry.node2 === cell.vertexLabel)
                     ) {
-                        fadeOut(entry.line, 5000);
+                        fadeOut(entry.line);
                     }
                 });
                 activeAnimations.push(
@@ -284,7 +284,7 @@ function bellmanFordStart() {
             let edge = getEdgeByAdjacentNodes(update.previousVertexLabel, update.vertexLabel);
             for(let previousUpdate of previousUpdatesInfo){
                 if(previousUpdate.update.vertexLabel === update.vertexLabel && previousUpdate.drawingInfo.line){
-                    fadeOut(previousUpdate.drawingInfo.line, 5000);
+                    fadeOut(previousUpdate.drawingInfo.line);
                 }
             }
             let shape = edgeContainerMap.get(edge);
