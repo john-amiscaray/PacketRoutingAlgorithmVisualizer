@@ -13,6 +13,7 @@ stage.canvas.width = window.innerWidth * 0.85;
 stage.canvas.height = window.innerHeight * 0.85;
 
 const nodeContainerMap = new Map();
+const edgeContainerMap = new Map();
 
 function randomPositionX() {
     return Math.random() * (stage.canvas.width - NODE_RADIUS) + NODE_RADIUS;
@@ -102,6 +103,8 @@ function drawEdge(edge) {
 
     const container = new createjs.Container();
     container.addChild(line, weight);
+
+    edgeContainerMap.set(edge, container);
 
     stage.addChild(container);
     stage.update();
@@ -200,6 +203,7 @@ export {
     redraw,
     drawConnectingEdge,
     nodeContainerMap,
+    edgeContainerMap,
     drawText,
     redrawNodes,
     fadeOut

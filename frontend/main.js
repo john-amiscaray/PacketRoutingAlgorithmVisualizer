@@ -14,11 +14,11 @@ import {
 import {
     redraw,
     drawConnectingEdge,
-    drawNode,
     nodeContainerMap,
     drawText,
     redrawNodes,
     fadeOut,
+    edgeContainerMap,
 } from "./canvas.js";
 
 let stage = new createjs.Stage("graphics-pane");
@@ -276,12 +276,25 @@ function bellmanFordStart() {
             let edge = getEdgeByAdjacentNodes(update.previousVertexLabel, update.vertexLabel);
             for(let previousUpdate of previousUpdatesInfo){
                 if(previousUpdate.update.vertexLabel === update.vertexLabel && previousUpdate.drawingInfo.line){
-                    fadeOut(previousUpdate.drawingInfo.line, 1000);
+                    fadeOut(previousUpdate.drawingInfo.line, 2000);
                 }
             }
+            let shape = edgeContainerMap.get(edge);
+
+            createjs.Tween.get(shape, { loop: true })
+                .to({ alpha: 0.2 }, 500)
+                .to({ alpha: 1 }, 500);
+
             drawConnectingEdge(edge)
                 .then(info => {
                     previousUpdatesInfo.push({ drawingInfo: info, update });
+                    createjs.Tween.removeAllTweens();
+                    let containerIter = edgeContainerMap.values();
+                    let container = containerIter.next().value;
+                    do {
+                        container.alpha = 1;
+                        container = containerIter.next().value;
+                    } while (container);
                     redrawNodes();
                     drawConnectingEdgesFromUpdates(updates, previousUpdatesInfo).then(updatesInfo => resolve(updatesInfo));
                 });
@@ -298,7 +311,7 @@ function bellmanFordStart() {
 
         let state = states.shift();
 
-        drawConnectingEdgesFromUpdates(state.updates).then(updatesInfo => {
+        drawConnectingEdgesFromUpdates(state.updates, updatesInfo).then(updatesInfo => {
             sleep(1000).then(() => drawBellmanFordStates(states, updatesInfo));
         });
 
