@@ -96,6 +96,16 @@ function removeEdge(node1, node2, weight) {
     }
 }
 
+function getEdgeWeight(node1, node2) {
+    const edge = graph.edges.find(
+        (edge) =>
+            (edge.node1 === node1 && edge.node2 === node2) ||
+            (edge.node1 === node2 && edge.node2 === node1)
+    );
+    return edge ? edge.weight : null;
+}
+
+
 function saveGraph() {
 
     localStorage.setItem("graph", JSON.stringify(graph));
@@ -139,6 +149,7 @@ export {
     graph,
     addNode,
     addEdge,
+    getEdgeWeight,
     removeNode,
     removeEdge,
     saveGraph,

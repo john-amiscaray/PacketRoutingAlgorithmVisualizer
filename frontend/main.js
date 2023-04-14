@@ -1,12 +1,14 @@
 import {
     addEdge,
     addNode,
+    getEdgeWeight,
     computeDijkstra,
     graph,
     removeNode,
     saveGraph,
     removeEdge,
     clearGraph,
+    computeBellmanFord
 } from "./graph.js";
 
 import {
@@ -144,8 +146,11 @@ function dijkstraStart() {
         if (states.length === 0) {
             return;
         }
+
+        console.log(states);
         // Pops out the first element similar to a stack
         let state = states.shift();
+        console.log(state);
         let activeAnimations = [];
         let container = nodeContainerMap.get(state.currentNode);
         createjs.Tween.get(container, { loop: true })
@@ -218,18 +223,18 @@ function dijkstraStart() {
                             )
                         );
                         yValMultiplier++;
-                   });
+                    });
                 } 
                 drawDijkstraStates(states, previouslyAddedEdges, tempTextContainer);
             });
         });
     }
-
+    
     computeDijkstra(start)
-        .then((res) => res.json())
-        .then((res) => {
-            drawDijkstraStates(res);
-        });
+    .then((res) => res.json())
+    .then((res) => {
+        drawDijkstraStates(res);
+    });
 }
 
 function bellmanFordStart() {
@@ -240,11 +245,91 @@ function bellmanFordStart() {
         return;
     }
 
+    redraw();
+
+    function drawBellmanFordStates(states, previouslyAddedEdges = [], textContainer = []) {
+        const JAVA_MAX_INT = 2147483647;
+
+        if (states.length === 0) {
+            return;
+        }
+
+        // Pops out the first path table of the states list.
+        const currentPathTable = states.shift().pathTable;
+        let updates = [];
+
+        for (let i = 0; i < currentPathTable.length; i++) {
+            const currentNodeLabel = currentPathTable[i].vertexLabel;
+            const currentDistance = currentPathTable[i].distance;
+            const previousNodeLabel = currentPathTable[i].previousVertexLabel;
+
+            if (previousNodeLabel !== null) {
+                const previousNodeContainer = nodeContainerMap.get(previousNodeLabel);
+                const currentNodeContainer = nodeContainerMap.get(currentNodeLabel);
+                const edgeWeight = graph.getEdgeWeight(previousNodeLabel, currentNodeLabel);
+
+                // Draw the path from the previous node to the current node.
+                const pathColor = "#0000FF";
+                const connectingEdge = drawConnectingEdge(
+                    stage,
+                    previousNodeContainer.x + 25,
+                    previousNodeContainer.y + 25,
+                    currentNodeContainer.x + 25,
+                    currentNodeContainer.y + 25,
+                    pathColor,
+                    1
+                );
+
+                previouslyAddedEdges.push(connectingEdge);
+                updates.push(currentNodeLabel);
+            }
+
+            const nodeContainer = nodeContainerMap.get(currentNodeLabel);
+
+            // Draw the node with its updated distance value.
+            const nodeColor = updates.includes(currentNodeLabel) ? "#00FF00" : "#FFFFFF";
+            drawNode(stage, nodeContainer.x, nodeContainer.y, 30, nodeColor);
+
+            // Draw the distance text.
+            const distanceText = currentDistance === JAVA_MAX_INT ? "INF" : currentDistance;
+            const previousDistanceText = textContainer[i] || null;
+            const textX = nodeContainer.x + 25;
+            const textY = nodeContainer.y + 35;
+            const distanceColor =
+                updates.includes(currentNodeLabel) || previousDistanceText === null
+                    ? "#FFFFFF"
+                    : "#000000";
+            textContainer[i] = drawText(stage, distanceText, textX, textY, distanceColor);
+
+            // Remove the previous distance text from the stage.
+            if (previousDistanceText !== null) {
+                stage.removeChild(previousDistanceText);
+            }
+        }
+
+        sleep(1000).then(() => {
+            // Remove the connecting edges from the stage.
+            for (let edge of previouslyAddedEdges) {
+                stage.removeChild(edge);
+            }
+
+            drawBellmanFordStates(states, previouslyAddedEdges, textContainer);
+        });
+    }
+    //old one
+    // computeBellmanFord(start, drawBellmanFordStates);
+
     computeBellmanFord(start)
-        .then((res) => res.json())
-        // res in the following line is the array of DijkstraState objects from the backend. TODO: use them for the animation
-        .then((res) => console.log(res));
+    .then((res) => res.json())
+    .then((res) => {
+        drawBellmanFordStates(res);
+    });
 }
+
+
+
+
+
 
 createjs.Ticker.setFPS(60);
 
