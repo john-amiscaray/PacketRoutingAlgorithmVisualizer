@@ -192,6 +192,14 @@ function dijkstraStart() {
         Promise.all(activeAnimations).then((values) => {
             createjs.Tween.removeAllTweens();
             redrawNodes();
+            // Ensure all lines are deleted properly even if Tween is lost prematurely
+            previouslyAddedEdges.forEach((entry) => {
+                let line = entry.line
+                if (line && line.alpha < 1) {
+                    line.alpha = 0;
+                    stage.removeChild(line);
+                }
+            });
             previouslyAddedEdges = previouslyAddedEdges.concat(values);
             sleep(1000).then(() => {
                 textContainer.forEach((container) => {
@@ -276,7 +284,7 @@ function bellmanFordStart() {
             let edge = getEdgeByAdjacentNodes(update.previousVertexLabel, update.vertexLabel);
             for(let previousUpdate of previousUpdatesInfo){
                 if(previousUpdate.update.vertexLabel === update.vertexLabel && previousUpdate.drawingInfo.line){
-                    fadeOut(previousUpdate.drawingInfo.line, 2000);
+                    fadeOut(previousUpdate.drawingInfo.line, 5000);
                 }
             }
             let shape = edgeContainerMap.get(edge);
@@ -288,7 +296,15 @@ function bellmanFordStart() {
             drawConnectingEdge(edge)
                 .then(info => {
                     previousUpdatesInfo.push({ drawingInfo: info, update });
-                    createjs.Tween.removeAllTweens();
+                    createjs.Tween.removeTweens(shape);
+                    // Look through all the previous lines and delete them. Ensures that the line is deleted even if the Tween animation is stopped prematurely
+                    for(let previousUpdate of previousUpdatesInfo){
+                        let line = previousUpdate.drawingInfo.line;
+                        if(line && line.alpha < 1){
+                            line.alpha = 0;
+                            stage.removeChild(line);
+                        }
+                    }
                     let containerIter = edgeContainerMap.values();
                     let container = containerIter.next().value;
                     do {
