@@ -2,15 +2,16 @@ import {
     addEdge,
     addNode,
     computeDijkstra,
+    computeBellmanFord,
     graph,
     removeNode,
     saveGraph,
     removeEdge,
     clearGraph,
+    getEdgeByAdjacentNodes,
 } from "./graph.js";
 
 import {
-    drawEdge,
     redraw,
     drawConnectingEdge,
     drawNode,
@@ -267,10 +268,60 @@ function bellmanFordStart() {
         return;
     }
 
+    redraw();
+
+    function drawConnectingEdgesFromUpdates(updates, previousUpdatesInfo = []){
+
+        return new Promise((resolve, reject) => {
+
+            if(updates.length === 0){
+                resolve(previousUpdatesInfo);
+            }
+    
+            let update = updates.shift();
+            let edge = getEdgeByAdjacentNodes(update.previousVertexLabel, update.vertexLabel);
+            for(let previousUpdate of previousUpdatesInfo){
+                if(previousUpdate.update.vertexLabel === update.vertexLabel && previousUpdate.drawingInfo.line){
+                    createjs.Tween.get(previousUpdate.drawingInfo.line)
+                        .to({ alpha: 0 }, 1000)
+                        .call(() => stage.removeChild(previousUpdate.drawingInfo.line))
+                }
+            }
+            drawConnectingEdge(edge)
+                .then(info => {
+                    previousUpdatesInfo.push({ drawingInfo: info, update });
+                    let containerIter = nodeContainerMap.values();
+                    let container = containerIter.next().value;
+                    do {
+                        stage.removeChild(container);
+                        container = containerIter.next().value;
+                    } while (container);
+                    graph.nodes.forEach((node) => drawNode(node));
+                    drawConnectingEdgesFromUpdates(updates, previousUpdatesInfo).then(updatesInfo => resolve(updatesInfo));
+                });
+
+        });
+
+    }
+
+    function drawBellmanFordStates(states, updatesInfo = []){
+
+        console.log(updatesInfo);
+        if(states.length === 0){
+            return;
+        }
+
+        let state = states.shift();
+
+        drawConnectingEdgesFromUpdates(state.updates).then(updatesInfo => {
+            drawBellmanFordStates(states, updatesInfo);
+        });
+
+    }
+
     computeBellmanFord(start)
         .then((res) => res.json())
-        // res in the following line is the array of DijkstraState objects from the backend. TODO: use them for the animation
-        .then((res) => console.log(res));
+        .then((res) => drawBellmanFordStates(res));
 }
 
 createjs.Ticker.setFPS(60);
