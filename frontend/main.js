@@ -110,6 +110,60 @@ function sleep(time) {
     return new Promise((resolve) => setTimeout(resolve, time));
 }
 
+function drawPathTableFromState(algoState) {
+
+    const JAVA_MAX_INT = 2147483647;
+
+    let textContainer = [];
+    let yValMultiplier = 1;
+    let xPos = stage.canvas.width - 375;
+
+    textContainer.push(
+        drawText(
+            "Vertex Label ----  Distance ---- Previous Vertex Label",
+            xPos,
+            10 * yValMultiplier
+        )
+    );
+    yValMultiplier++;
+    if (algoState) {
+        algoState.pathTable.forEach((elem) => {
+            let distance =
+                elem.distance !== JAVA_MAX_INT
+                    ? elem.distance
+                    : "∞";
+            textContainer.push(
+                drawText(
+                    `${elem.vertexLabel}`,
+                    xPos + 50,
+                    14 * yValMultiplier,
+                    "right"
+                )
+            );
+            textContainer.push(
+                drawText(
+                    `${distance}`,
+                    xPos + 150,
+                    14 * yValMultiplier,
+                    "right"
+                )
+            );
+            textContainer.push(
+                drawText(
+                    `${elem.previousVertexLabel ?? "NULL"}`,
+                    xPos + 300,
+                    14 * yValMultiplier,
+                    "right"
+                )
+            );
+            yValMultiplier++;
+        });
+    }
+
+    return textContainer;
+
+}
+
 function dijkstraStart() {
     let start = $("#starting-node").val().trim();
 
@@ -145,7 +199,6 @@ function dijkstraStart() {
         previouslyAddedEdges = [],
         textContainer = []
     ) {
-        const JAVA_MAX_INT = 2147483647;
 
         if (states.length === 0) {
             return;
@@ -186,9 +239,6 @@ function dijkstraStart() {
             }
         });
 
-        let yValMultiplier = 1;
-        let xPos = stage.canvas.width - 375;
-        let tempTextContainer = [];
         Promise.all(activeAnimations).then((values) => {
             createjs.Tween.removeAllTweens();
             redrawNodes();
@@ -205,51 +255,11 @@ function dijkstraStart() {
                 textContainer.forEach((container) => {
                     stage.removeChild(container);
                 });
-                tempTextContainer.push(
-                    drawText(
-                        "Vertex Label ----  Distance ---- Previous Vertex Label",
-                        xPos,
-                        10 * yValMultiplier
-                    )
-                );
-                yValMultiplier++;
-                if (state) {
-                    state.pathTable.forEach((elem) => {
-                        let distance =
-                            elem.distance !== JAVA_MAX_INT
-                                ? elem.distance
-                                : "∞";
-                        tempTextContainer.push(
-                            drawText(
-                                `${elem.vertexLabel}`,
-                                xPos + 50,
-                                14 * yValMultiplier,
-                                "right"
-                            )
-                        );
-                        tempTextContainer.push(
-                            drawText(
-                                `${distance}`,
-                                xPos + 150,
-                                14 * yValMultiplier,
-                                "right"
-                            )
-                        );
-                        tempTextContainer.push(
-                            drawText(
-                                `${elem.previousVertexLabel ?? "NULL"}`,
-                                xPos + 300,
-                                14 * yValMultiplier,
-                                "right"
-                            )
-                        );
-                        yValMultiplier++;
-                    });
-                }
+                let newTextContainer = drawPathTableFromState(state);
                 drawDijkstraStates(
                     states,
                     previouslyAddedEdges,
-                    tempTextContainer
+                    newTextContainer
                 );
             });
         });
