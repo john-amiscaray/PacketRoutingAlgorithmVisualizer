@@ -139,8 +139,11 @@ function dijkstraStart() {
         return result;
     }
 
-    function drawDijkstraStates(states, previouslyAddedEdges = [], textContainer = []) {
-
+    function drawDijkstraStates(
+        states,
+        previouslyAddedEdges = [],
+        textContainer = []
+    ) {
         const JAVA_MAX_INT = 2147483647;
 
         if (states.length === 0) {
@@ -201,12 +204,12 @@ function dijkstraStart() {
             graph.nodes.forEach((node) => drawNode(node));
             previouslyAddedEdges = previouslyAddedEdges.concat(values);
             sleep(1000).then(() => {
-                textContainer.forEach(container => {
+                textContainer.forEach((container) => {
                     stage.removeChild(container);
                 });
                 tempTextContainer.push(
                     drawText(
-                        "Vertex Label ----    Distance ---- Previous Vertex Label",
+                        "Vertex Label ----  Distance ---- Previous Vertex Label",
                         xPos,
                         10 * yValMultiplier
                     )
@@ -214,18 +217,42 @@ function dijkstraStart() {
                 yValMultiplier++;
                 if (state) {
                     state.pathTable.forEach((elem) => {
-                        let distance = elem.distance !== JAVA_MAX_INT ? elem.distance : "∞";
+                        let distance =
+                            elem.distance !== JAVA_MAX_INT
+                                ? elem.distance
+                                : "∞";
                         tempTextContainer.push(
                             drawText(
-                                `${elem.vertexLabel.padStart(12, " ").padEnd(35, " ")}${distance}${(elem.previousVertexLabel ?? "NULL").padStart(30, " ")}`,
-                                xPos,
-                                14 * yValMultiplier
+                                `${elem.vertexLabel}`,
+                                xPos + 50,
+                                14 * yValMultiplier,
+                                "right"
+                            )
+                        );
+                        tempTextContainer.push(
+                            drawText(
+                                `${distance}`,
+                                xPos + 150,
+                                14 * yValMultiplier,
+                                "right"
+                            )
+                        );
+                        tempTextContainer.push(
+                            drawText(
+                                `${elem.previousVertexLabel ?? "NULL"}`,
+                                xPos + 300,
+                                14 * yValMultiplier,
+                                "right"
                             )
                         );
                         yValMultiplier++;
                     });
-                } 
-                drawDijkstraStates(states, previouslyAddedEdges, tempTextContainer);
+                }
+                drawDijkstraStates(
+                    states,
+                    previouslyAddedEdges,
+                    tempTextContainer
+                );
             });
         });
     }
