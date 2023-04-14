@@ -18,6 +18,7 @@ import {
     nodeContainerMap,
     drawText,
     redrawNodes,
+    fadeOut,
 } from "./canvas.js";
 
 let stage = new createjs.Stage("graphics-pane");
@@ -172,9 +173,7 @@ function dijkstraStart() {
                         (entry.node1 === cell.vertexLabel ||
                             entry.node2 === cell.vertexLabel)
                     ) {
-                        createjs.Tween.get(entry.line)
-                            .to({ alpha: 0 }, 5000)
-                            .call(() => stage.removeChild(entry.line));
+                        fadeOut(entry.line, 5000);
                     }
                 });
                 activeAnimations.push(
@@ -277,9 +276,7 @@ function bellmanFordStart() {
             let edge = getEdgeByAdjacentNodes(update.previousVertexLabel, update.vertexLabel);
             for(let previousUpdate of previousUpdatesInfo){
                 if(previousUpdate.update.vertexLabel === update.vertexLabel && previousUpdate.drawingInfo.line){
-                    createjs.Tween.get(previousUpdate.drawingInfo.line)
-                        .to({ alpha: 0 }, 1000)
-                        .call(() => stage.removeChild(previousUpdate.drawingInfo.line))
+                    fadeOut(previousUpdate.drawingInfo.line, 1000);
                 }
             }
             drawConnectingEdge(edge)

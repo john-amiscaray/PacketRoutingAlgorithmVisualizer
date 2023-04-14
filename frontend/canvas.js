@@ -22,6 +22,14 @@ function randomPositionY() {
     return Math.random() * (stage.canvas.height - NODE_RADIUS) + NODE_RADIUS;
 }
 
+function fadeOut(shape, duration = 5000) {
+
+    createjs.Tween.get(shape)
+        .to({ alpha: 0 }, duration)
+        .call(() => stage.removeChild(shape));
+
+}
+
 // Function to draw a node
 function drawNode(node) {
     const circle = new createjs.Shape();
@@ -193,5 +201,6 @@ export {
     drawConnectingEdge,
     nodeContainerMap,
     drawText,
-    redrawNodes
+    redrawNodes,
+    fadeOut
 };
