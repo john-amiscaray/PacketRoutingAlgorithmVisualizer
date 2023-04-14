@@ -99,9 +99,9 @@ function drawEdge(edge) {
     stage.update();
 }
 
-function drawText(text, x, y) {
+function drawText(text, x, y, alignment = "left") {
     const tempText = new createjs.Text(text, "bold 14px Arial", "Black");
-    tempText.textAlign = "left";
+    tempText.textAlign = alignment;
     tempText.textBaseline = "middle";
 
     tempText.x = x;
