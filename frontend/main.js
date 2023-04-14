@@ -282,9 +282,11 @@ function bellmanFordStart() {
 
     redraw();
 
-    function drawConnectingEdgesFromUpdates(updates, previousUpdatesInfo = []){
+    function drawConnectingEdgesFromUpdates(state, previousUpdatesInfo = []){
 
         return new Promise((resolve, reject) => {
+
+            let updates = state.updates;
 
             if(updates.length === 0){
                 resolve(previousUpdatesInfo);
@@ -322,14 +324,14 @@ function bellmanFordStart() {
                         container = containerIter.next().value;
                     } while (container);
                     redrawNodes();
-                    drawConnectingEdgesFromUpdates(updates, previousUpdatesInfo).then(updatesInfo => resolve(updatesInfo));
+                    drawConnectingEdgesFromUpdates(state, previousUpdatesInfo).then(updatesInfo => resolve(updatesInfo));
                 });
 
         });
 
     }
 
-    function drawBellmanFordStates(states, updatesInfo = []){
+    function drawBellmanFordStates(states, updatesInfo = [], textContainer = []){
 
         if(states.length === 0){
             return;
@@ -337,8 +339,18 @@ function bellmanFordStart() {
 
         let state = states.shift();
 
-        drawConnectingEdgesFromUpdates(state.updates, updatesInfo).then(updatesInfo => {
-            sleep(1000).then(() => drawBellmanFordStates(states, updatesInfo));
+        drawConnectingEdgesFromUpdates(state, updatesInfo).then(updatesInfo => {
+            sleep(1000).then(() => { 
+
+                textContainer.forEach((container) => {
+                    stage.removeChild(container);
+                });
+
+                let newTextContainer = drawPathTableFromState(state);
+    
+                drawBellmanFordStates(states, updatesInfo, newTextContainer);
+
+            });
         });
 
     }
