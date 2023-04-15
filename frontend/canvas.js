@@ -6,7 +6,7 @@ const NODE_RADIUS = 45;
 const NODE_COLOR = "DeepSkyBlue";
 const EDGE_COLOR = "Green";
 const LABEL_COLOR = "White";
-const WEIGHT_COLOR = "Black";
+const WEIGHT_COLOR = "White";
 const FINAL_EDGE_COLOR = "Red";
 
 stage.canvas.width = window.innerWidth * 0.85;
@@ -111,7 +111,7 @@ function drawEdge(edge) {
 }
 
 function drawText(text, x, y, alignment = "left") {
-    const tempText = new createjs.Text(text, "bold 14px Arial", "Black");
+    const tempText = new createjs.Text(text, "bold 14px Arial", "White");
     tempText.textAlign = alignment;
     tempText.textBaseline = "middle";
 
