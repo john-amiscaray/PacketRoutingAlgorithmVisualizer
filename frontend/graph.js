@@ -96,6 +96,12 @@ function removeEdge(node1, node2, weight) {
     }
 }
 
+function getEdgeByAdjacentNodes(node1, node2) {
+
+    return graph.edges.find((edge => edge.node1 === node1 && edge.node2 === node2) || (edge => edge.node1 === node2 && edge.node2 === node1));
+
+}
+
 function saveGraph() {
 
     localStorage.setItem("graph", JSON.stringify(graph));
@@ -144,5 +150,6 @@ export {
     saveGraph,
     clearGraph,
     computeDijkstra,
-    computeBellmanFord
+    computeBellmanFord,
+    getEdgeByAdjacentNodes
 };

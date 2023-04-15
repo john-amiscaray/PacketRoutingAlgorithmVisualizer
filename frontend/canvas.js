@@ -13,6 +13,7 @@ stage.canvas.width = window.innerWidth * 0.85;
 stage.canvas.height = window.innerHeight * 0.85;
 
 const nodeContainerMap = new Map();
+const edgeContainerMap = new Map();
 
 function randomPositionX() {
     return Math.random() * (stage.canvas.width - NODE_RADIUS) + NODE_RADIUS;
@@ -20,6 +21,14 @@ function randomPositionX() {
 
 function randomPositionY() {
     return Math.random() * (stage.canvas.height - NODE_RADIUS) + NODE_RADIUS;
+}
+
+function fadeOut(shape, duration = 5000) {
+
+    createjs.Tween.get(shape)
+        .to({ alpha: 0 }, duration)
+        .call(() => stage.removeChild(shape));
+
 }
 
 // Function to draw a node
@@ -94,6 +103,8 @@ function drawEdge(edge) {
 
     const container = new createjs.Container();
     container.addChild(line, weight);
+
+    edgeContainerMap.set(edge, container);
 
     stage.addChild(container);
     stage.update();
@@ -174,11 +185,26 @@ function redraw() {
     stage.update();
 }
 
+function redrawNodes() {
+
+    let containerIter = nodeContainerMap.values();
+    let container = containerIter.next().value;
+    do {
+        stage.removeChild(container);
+        container = containerIter.next().value;
+    } while (container);
+    graph.nodes.forEach((node) => drawNode(node));
+
+}
+
 export {
     drawNode,
     drawEdge,
     redraw,
     drawConnectingEdge,
     nodeContainerMap,
+    edgeContainerMap,
     drawText,
+    redrawNodes,
+    fadeOut
 };

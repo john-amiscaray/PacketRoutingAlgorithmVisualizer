@@ -2,20 +2,23 @@ import {
     addEdge,
     addNode,
     computeDijkstra,
+    computeBellmanFord,
     graph,
     removeNode,
     saveGraph,
     removeEdge,
     clearGraph,
+    getEdgeByAdjacentNodes,
 } from "./graph.js";
 
 import {
-    drawEdge,
     redraw,
     drawConnectingEdge,
-    drawNode,
     nodeContainerMap,
     drawText,
+    redrawNodes,
+    fadeOut,
+    edgeContainerMap,
 } from "./canvas.js";
 
 let stage = new createjs.Stage("graphics-pane");
@@ -107,6 +110,60 @@ function sleep(time) {
     return new Promise((resolve) => setTimeout(resolve, time));
 }
 
+function drawPathTableFromState(algoState) {
+
+    const JAVA_MAX_INT = 2147483647;
+
+    let textContainer = [];
+    let yValMultiplier = 1;
+    let xPos = stage.canvas.width - 375;
+
+    textContainer.push(
+        drawText(
+            "Vertex Label ----  Distance ---- Previous Vertex Label",
+            xPos,
+            10 * yValMultiplier
+        )
+    );
+    yValMultiplier++;
+    if (algoState) {
+        algoState.pathTable.forEach((elem) => {
+            let distance =
+                elem.distance !== JAVA_MAX_INT
+                    ? elem.distance
+                    : "∞";
+            textContainer.push(
+                drawText(
+                    `${elem.vertexLabel}`,
+                    xPos + 50,
+                    14 * yValMultiplier,
+                    "right"
+                )
+            );
+            textContainer.push(
+                drawText(
+                    `${distance}`,
+                    xPos + 150,
+                    14 * yValMultiplier,
+                    "right"
+                )
+            );
+            textContainer.push(
+                drawText(
+                    `${elem.previousVertexLabel ?? "NULL"}`,
+                    xPos + 300,
+                    14 * yValMultiplier,
+                    "right"
+                )
+            );
+            yValMultiplier++;
+        });
+    }
+
+    return textContainer;
+
+}
+
 function dijkstraStart() {
     let start = $("#starting-node").val().trim();
 
@@ -142,7 +199,6 @@ function dijkstraStart() {
         previouslyAddedEdges = [],
         textContainer = []
     ) {
-        const JAVA_MAX_INT = 2147483647;
 
         if (states.length === 0) {
             return;
@@ -170,9 +226,7 @@ function dijkstraStart() {
                         (entry.node1 === cell.vertexLabel ||
                             entry.node2 === cell.vertexLabel)
                     ) {
-                        createjs.Tween.get(entry.line)
-                            .to({ alpha: 0 }, 5000)
-                            .call(() => stage.removeChild(entry.line));
+                        fadeOut(entry.line);
                     }
                 });
                 activeAnimations.push(
@@ -185,68 +239,27 @@ function dijkstraStart() {
             }
         });
 
-        let yValMultiplier = 1;
-        let xPos = stage.canvas.width - 375;
-        let tempTextContainer = [];
         Promise.all(activeAnimations).then((values) => {
             createjs.Tween.removeAllTweens();
-            let containerIter = nodeContainerMap.values();
-            let container = containerIter.next().value;
-            do {
-                stage.removeChild(container);
-                container = containerIter.next().value;
-            } while (container);
-            graph.nodes.forEach((node) => drawNode(node));
+            redrawNodes();
+            // Ensure all lines are deleted properly even if Tween is lost prematurely
+            previouslyAddedEdges.forEach((entry) => {
+                let line = entry.line
+                if (line && line.alpha < 1) {
+                    line.alpha = 0;
+                    stage.removeChild(line);
+                }
+            });
             previouslyAddedEdges = previouslyAddedEdges.concat(values);
             sleep(1000).then(() => {
                 textContainer.forEach((container) => {
                     stage.removeChild(container);
                 });
-                tempTextContainer.push(
-                    drawText(
-                        "Vertex Label ----  Distance ---- Previous Vertex Label",
-                        xPos,
-                        10 * yValMultiplier
-                    )
-                );
-                yValMultiplier++;
-                if (state) {
-                    state.pathTable.forEach((elem) => {
-                        let distance =
-                            elem.distance !== JAVA_MAX_INT
-                                ? elem.distance
-                                : "∞";
-                        tempTextContainer.push(
-                            drawText(
-                                `${elem.vertexLabel}`,
-                                xPos + 50,
-                                14 * yValMultiplier,
-                                "right"
-                            )
-                        );
-                        tempTextContainer.push(
-                            drawText(
-                                `${distance}`,
-                                xPos + 150,
-                                14 * yValMultiplier,
-                                "right"
-                            )
-                        );
-                        tempTextContainer.push(
-                            drawText(
-                                `${elem.previousVertexLabel ?? "NULL"}`,
-                                xPos + 300,
-                                14 * yValMultiplier,
-                                "right"
-                            )
-                        );
-                        yValMultiplier++;
-                    });
-                }
+                let newTextContainer = drawPathTableFromState(state);
                 drawDijkstraStates(
                     states,
                     previouslyAddedEdges,
-                    tempTextContainer
+                    newTextContainer
                 );
             });
         });
@@ -267,10 +280,89 @@ function bellmanFordStart() {
         return;
     }
 
+    redraw();
+
+    function drawConnectingEdgesFromUpdates(state, previousState, previousUpdatesInfo = [], textContainer = []){
+
+        return new Promise((resolve, reject) => {
+
+            let updates = state.updates;
+
+            if(updates.length === 0){
+                resolve(previousUpdatesInfo);
+            }
+    
+            let update = updates.shift();
+            let edge = getEdgeByAdjacentNodes(update.previousVertexLabel, update.vertexLabel);
+            let cellToUpdate = previousState.pathTable.find(cell => cell.vertexLabel === update.vertexLabel);
+            cellToUpdate.previousVertexLabel = update.previousVertexLabel;
+            cellToUpdate.distance = update.distance;
+            textContainer.forEach(container => stage.removeChild(container));
+            textContainer = drawPathTableFromState(previousState);
+            for(let previousUpdate of previousUpdatesInfo){
+                if(previousUpdate.update.vertexLabel === update.vertexLabel && previousUpdate.drawingInfo.line){
+                    fadeOut(previousUpdate.drawingInfo.line);
+                }
+            }
+            let shape = edgeContainerMap.get(edge);
+
+            createjs.Tween.get(shape, { loop: true })
+                .to({ alpha: 0.2 }, 500)
+                .to({ alpha: 1 }, 500);
+
+            drawConnectingEdge(edge)
+                .then(info => {
+                    previousUpdatesInfo.push({ drawingInfo: info, update });
+                    createjs.Tween.removeTweens(shape);
+                    // Look through all the previous lines and delete them. Ensures that the line is deleted even if the Tween animation is stopped prematurely
+                    for(let previousUpdate of previousUpdatesInfo){
+                        let line = previousUpdate.drawingInfo.line;
+                        if(line && line.alpha < 1){
+                            line.alpha = 0;
+                            stage.removeChild(line);
+                        }
+                    }
+                    let containerIter = edgeContainerMap.values();
+                    let container = containerIter.next().value;
+                    do {
+                        container.alpha = 1;
+                        container = containerIter.next().value;
+                    } while (container);
+                    redrawNodes();
+                    drawConnectingEdgesFromUpdates(state, previousState, previousUpdatesInfo, textContainer).then(updatesInfo => resolve(updatesInfo));
+                });
+
+        });
+
+    }
+
+    function drawBellmanFordStates(states, updatesInfo = [], previousState = null){
+
+        if(states.length === 0){
+            return;
+        }
+
+        let state = states.shift();
+
+        let textContainer = drawPathTableFromState(state);
+
+        drawConnectingEdgesFromUpdates(state, previousState, updatesInfo, textContainer).then(updatesInfo => {
+            sleep(1000).then(() => { 
+
+                textContainer.forEach((container) => {
+                    stage.removeChild(container);
+                });
+    
+                drawBellmanFordStates(states, updatesInfo, state);
+
+            });
+        });
+
+    }
+
     computeBellmanFord(start)
         .then((res) => res.json())
-        // res in the following line is the array of DijkstraState objects from the backend. TODO: use them for the animation
-        .then((res) => console.log(res));
+        .then((res) => drawBellmanFordStates(res));
 }
 
 createjs.Ticker.setFPS(60);
