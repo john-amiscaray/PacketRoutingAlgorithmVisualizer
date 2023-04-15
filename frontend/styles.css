@@ -1,5 +1,24 @@
 :root {
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    font-family: "Helevetica",sans-serif; 
+    font-weight: bold;
+    
+}
+
+label {
+    color: white;
+}
+
+span {
+    color: white;
+}
+
+
+h3 {
+    color: white;
+}
+
+h2 {
+    color: white;
 }
 
 html {
@@ -17,9 +36,16 @@ main {
     height: 100%;
 }
 
+legend {
+
+    color: white;
+
+}
+
 #graphics-pane {
     border: 2px solid black;
     width: 85%;
+    background-color: #222;
 }
 
 #controls {
@@ -34,6 +60,7 @@ main {
     overflow-y: scroll;
     overflow-x: auto;
     padding-bottom: 30px;
+    background-image: linear-gradient(blue, silver, purple)
 }
 
 #controls header {
@@ -73,8 +100,8 @@ main {
 }
 
 .posButtonAction {
-    background-color: lightgreen;
-    color: darkblue;
+    background-color: green;
+    color: black;
     border: 0px;
     transition-delay: 0.1s;
 }
