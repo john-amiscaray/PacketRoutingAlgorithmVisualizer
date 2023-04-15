@@ -282,7 +282,7 @@ function bellmanFordStart() {
 
     redraw();
 
-    function drawConnectingEdgesFromUpdates(state, previousUpdatesInfo = []){
+    function drawConnectingEdgesFromUpdates(state, previousState, previousUpdatesInfo = [], textContainer = []){
 
         return new Promise((resolve, reject) => {
 
@@ -294,6 +294,11 @@ function bellmanFordStart() {
     
             let update = updates.shift();
             let edge = getEdgeByAdjacentNodes(update.previousVertexLabel, update.vertexLabel);
+            let cellToUpdate = previousState.pathTable.find(cell => cell.vertexLabel === update.vertexLabel);
+            cellToUpdate.previousVertexLabel = update.previousVertexLabel;
+            cellToUpdate.distance = update.distance;
+            textContainer.forEach(container => stage.removeChild(container));
+            textContainer = drawPathTableFromState(previousState);
             for(let previousUpdate of previousUpdatesInfo){
                 if(previousUpdate.update.vertexLabel === update.vertexLabel && previousUpdate.drawingInfo.line){
                     fadeOut(previousUpdate.drawingInfo.line);
@@ -324,14 +329,14 @@ function bellmanFordStart() {
                         container = containerIter.next().value;
                     } while (container);
                     redrawNodes();
-                    drawConnectingEdgesFromUpdates(state, previousUpdatesInfo).then(updatesInfo => resolve(updatesInfo));
+                    drawConnectingEdgesFromUpdates(state, previousState, previousUpdatesInfo, textContainer).then(updatesInfo => resolve(updatesInfo));
                 });
 
         });
 
     }
 
-    function drawBellmanFordStates(states, updatesInfo = [], textContainer = []){
+    function drawBellmanFordStates(states, updatesInfo = [], previousState = null){
 
         if(states.length === 0){
             return;
@@ -339,16 +344,16 @@ function bellmanFordStart() {
 
         let state = states.shift();
 
-        drawConnectingEdgesFromUpdates(state, updatesInfo).then(updatesInfo => {
+        let textContainer = drawPathTableFromState(state);
+
+        drawConnectingEdgesFromUpdates(state, previousState, updatesInfo, textContainer).then(updatesInfo => {
             sleep(1000).then(() => { 
 
                 textContainer.forEach((container) => {
                     stage.removeChild(container);
                 });
-
-                let newTextContainer = drawPathTableFromState(state);
     
-                drawBellmanFordStates(states, updatesInfo, newTextContainer);
+                drawBellmanFordStates(states, updatesInfo, state);
 
             });
         });
